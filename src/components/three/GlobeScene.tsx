@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useEffect, MutableRefObject } from 'react';
+import { useMemo, useRef, useEffect, useState, MutableRefObject } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -8,48 +8,38 @@ import * as THREE from 'three';
  * Finale globe: a dotted Earth that assembles itself from scattered
  * particles as the user scrolls in (uProgress 0→1), then lights up
  * with great-circle connection arcs and traveling pulses.
+ *
+ * Land and colour both come from a real NASA Blue Marble map
+ * (public/textures/earth-map.png — RGB is the true surface colour, alpha is
+ * the land mask). This replaced eight hand-written continent polygons that
+ * were missing Britain, Japan, New Zealand, the Caribbean and most of
+ * South-East Asia, and a shader that coloured every dot by lerping two
+ * brand greens. Each dot now carries the actual colour of the ground beneath
+ * it, graded REALISM of the way back toward the site palette so the finale
+ * still belongs to the rest of the page.
  */
 
 const RADIUS = 2.1;
 
-/* ---------- Coarse continent outlines ([lng, lat] polygons) ---------- */
-const CONTINENTS: number[][][] = [
-  // North America
-  [[-168, 66], [-140, 70], [-120, 72], [-95, 72], [-80, 70], [-60, 60], [-55, 48], [-65, 44], [-75, 38], [-80, 30], [-82, 26], [-90, 29], [-97, 26], [-97, 20], [-105, 20], [-110, 23], [-117, 33], [-124, 40], [-124, 48], [-130, 55], [-145, 60], [-155, 58], [-165, 60]],
-  // Greenland
-  [[-45, 60], [-25, 70], [-20, 80], [-35, 83], [-60, 82], [-70, 77], [-55, 70], [-52, 62]],
-  // South America
-  [[-78, 7], [-70, 10], [-62, 10], [-52, 5], [-45, -2], [-35, -8], [-38, -15], [-40, -22], [-48, -28], [-53, -34], [-58, -39], [-65, -42], [-71, -46], [-72, -52], [-68, -55], [-75, -48], [-75, -40], [-72, -30], [-70, -18], [-76, -14], [-81, -5], [-80, 2]],
-  // Africa
-  [[-17, 15], [-16, 22], [-10, 30], [-5, 35], [10, 37], [20, 32], [32, 31], [35, 28], [43, 11], [51, 11], [48, 2], [40, -10], [35, -20], [32, -29], [26, -34], [19, -34], [14, -26], [12, -16], [9, -5], [8, 4], [-5, 5], [-10, 6], [-14, 10]],
-  // Europe
-  [[-10, 36], [-9, 43], [-2, 48], [0, 52], [5, 53], [8, 57], [5, 61], [10, 65], [18, 70], [28, 71], [40, 67], [45, 60], [50, 55], [40, 50], [30, 46], [28, 41], [22, 38], [15, 38], [10, 44], [3, 43], [-5, 36]],
-  // Asia
-  [[45, 42], [50, 50], [55, 55], [60, 60], [70, 68], [90, 72], [110, 73], [130, 71], [150, 68], [170, 66], [179, 65], [178, 62], [160, 60], [157, 52], [142, 50], [135, 44], [128, 40], [122, 32], [122, 25], [110, 20], [108, 12], [104, 2], [100, 7], [98, 12], [94, 18], [88, 22], [80, 15], [77, 8], [72, 20], [66, 25], [57, 26], [52, 30], [48, 30], [44, 38]],
-  // Indonesia / SE Asia arc
-  [[95, 5], [105, 0], [115, -3], [125, -5], [135, -4], [140, -6], [135, -8], [120, -9], [110, -8], [100, -2]],
-  // Australia
-  [[114, -22], [122, -18], [130, -12], [136, -12], [142, -11], [147, -19], [153, -26], [152, -32], [146, -39], [140, -38], [135, -35], [129, -32], [124, -33], [115, -34], [113, -26]],
-];
+/** 1 = raw satellite colour, 0 = the original all-emerald globe. */
+const REALISM = 0.78;
 
-function pointInPolygon(lng: number, lat: number, poly: number[][]) {
-  let inside = false;
-  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const [xi, yi] = poly[i];
-    const [xj, yj] = poly[j];
-    if (yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) {
-      inside = !inside;
-    }
-  }
-  return inside;
-}
+/** Blue Marble is dark at this scale; lift it so dots read on #0A0A0A. */
+const GAIN = 1.45;
+const LIFT = 0.04;
 
-function isLand(lng: number, lat: number) {
-  for (const poly of CONTINENTS) {
-    if (pointInPolygon(lng, lat, poly)) return true;
-  }
-  return false;
-}
+/**
+ * Brightening alone washes the map out — scaling RGB moves every channel
+ * toward white, so the Sahara and the boreal forest end up the same grey.
+ * Pushing each dot away from its own luma restores the distinction.
+ */
+const SATURATION = 1.85;
+
+const TEXTURE_URL = '/textures/earth-map.png';
+
+/* ---------- Brand palette the satellite colour is graded toward ---------- */
+const BRAND_A = new THREE.Color('#2FA084');
+const BRAND_B = new THREE.Color('#6FCF97');
 
 function latLngToVec3(lat: number, lng: number, radius: number) {
   const phi = ((90 - lat) * Math.PI) / 180;
@@ -74,13 +64,123 @@ const HUBS: [number, number][] = [
   [-33.87, 151.21], // Sydney
 ];
 
+/* ---------- Earth map sampling ---------- */
+
+type EarthMap = { data: Uint8ClampedArray; w: number; h: number };
+
+/** Loads the equirectangular map once and reads its pixels into memory. */
+function loadEarthMap(): Promise<EarthMap> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    // Same-origin asset, so the canvas is never tainted by this read.
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) {
+        reject(new Error('2d context unavailable'));
+        return;
+      }
+      ctx.drawImage(img, 0, 0);
+      const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      resolve({ data, w: canvas.width, h: canvas.height });
+    };
+    img.onerror = () => reject(new Error(`failed to load ${TEXTURE_URL}`));
+    img.src = TEXTURE_URL;
+  });
+}
+
+/** Nearest-pixel sample at a geographic coordinate. */
+function sample(map: EarthMap, lat: number, lng: number) {
+  const x = Math.min(
+    map.w - 1,
+    Math.max(0, Math.round(((lng + 180) / 360) * (map.w - 1)))
+  );
+  const y = Math.min(
+    map.h - 1,
+    Math.max(0, Math.round(((90 - lat) / 180) * (map.h - 1)))
+  );
+  const i = (y * map.w + x) * 4;
+  return {
+    r: map.data[i] / 255,
+    g: map.data[i + 1] / 255,
+    b: map.data[i + 2] / 255,
+    land: map.data[i + 3] > 127,
+  };
+}
+
+/** Builds the dot cloud from the sampled map. */
+function buildGeometry(map: EarthMap) {
+  const targets: number[] = [];
+  const scatters: number[] = [];
+  const offsets: number[] = [];
+  const shades: number[] = [];
+  const colors: number[] = [];
+
+  const tmp = new THREE.Color();
+  const brand = new THREE.Color();
+
+  const latStep = 1.8;
+  for (let lat = -85; lat <= 85; lat += latStep) {
+    const circumference = Math.cos((lat * Math.PI) / 180);
+    const lngStep = latStep / Math.max(circumference, 0.15);
+    for (let lng = -180; lng < 180; lng += lngStep) {
+      const px = sample(map, lat, lng);
+      if (!px.land) continue;
+
+      const p = latLngToVec3(lat, lng, RADIUS);
+      targets.push(p.x, p.y, p.z);
+
+      // scatter: same direction, blasted far out with jitter
+      const dir = p.clone().normalize();
+      const jitter = new THREE.Vector3(
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10
+      );
+      const s = dir.multiplyScalar(RADIUS + 4 + Math.random() * 9).add(jitter);
+      scatters.push(s.x, s.y, s.z);
+
+      offsets.push(Math.random());
+
+      const shade = Math.random();
+      shades.push(shade);
+
+      // True surface colour: brighten, re-saturate, then grade toward palette.
+      let r = Math.min(1, px.r * GAIN + LIFT);
+      let g = Math.min(1, px.g * GAIN + LIFT);
+      let b = Math.min(1, px.b * GAIN + LIFT);
+
+      const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      r = THREE.MathUtils.clamp(luma + (r - luma) * SATURATION, 0, 1);
+      g = THREE.MathUtils.clamp(luma + (g - luma) * SATURATION, 0, 1);
+      b = THREE.MathUtils.clamp(luma + (b - luma) * SATURATION, 0, 1);
+
+      tmp.setRGB(r, g, b);
+      brand.copy(BRAND_A).lerp(BRAND_B, shade);
+      tmp.lerp(brand, 1 - REALISM);
+      colors.push(tmp.r, tmp.g, tmp.b);
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(targets), 3));
+  geo.setAttribute('aScatter', new THREE.BufferAttribute(new Float32Array(scatters), 3));
+  geo.setAttribute('aOffset', new THREE.BufferAttribute(new Float32Array(offsets), 1));
+  geo.setAttribute('aShade', new THREE.BufferAttribute(new Float32Array(shades), 1));
+  geo.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(colors), 3));
+  return geo;
+}
+
 /* ---------- Shaders ---------- */
 const globeVertex = /* glsl */ `
   attribute vec3 aScatter;
   attribute float aOffset;
   attribute float aShade;
+  attribute vec3 aColor;
   uniform float uProgress;
-  varying float vShade;
+  varying vec3 vColor;
   varying float vAssembled;
 
   void main() {
@@ -89,22 +189,19 @@ const globeVertex = /* glsl */ `
     vec4 mv = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mv;
     gl_PointSize = (28.0 / -mv.z) * mix(0.7, 1.15, aShade);
-    vShade = aShade;
+    vColor = aColor;
     vAssembled = p;
   }
 `;
 
 const globeFragment = /* glsl */ `
-  uniform vec3 uColorA;
-  uniform vec3 uColorB;
-  varying float vShade;
+  varying vec3 vColor;
   varying float vAssembled;
 
   void main() {
     float d = length(gl_PointCoord - 0.5);
     float alpha = smoothstep(0.5, 0.15, d);
-    vec3 color = mix(uColorA, uColorB, vShade);
-    gl_FragColor = vec4(color, alpha * mix(0.35, 0.95, vAssembled));
+    gl_FragColor = vec4(vColor, alpha * mix(0.35, 0.95, vAssembled));
   }
 `;
 
@@ -126,55 +223,16 @@ const atmosphereFragment = /* glsl */ `
 `;
 
 /* ---------- Globe points ---------- */
-function GlobeDots({ progressRef }: { progressRef: MutableRefObject<number> }) {
+function GlobeDots({
+  geo,
+  progressRef,
+}: {
+  geo: THREE.BufferGeometry;
+  progressRef: MutableRefObject<number>;
+}) {
   const mat = useRef<THREE.ShaderMaterial>(null);
 
-  const geo = useMemo(() => {
-    const targets: number[] = [];
-    const scatters: number[] = [];
-    const offsets: number[] = [];
-    const shades: number[] = [];
-
-    const latStep = 1.8;
-    for (let lat = -85; lat <= 85; lat += latStep) {
-      const circumference = Math.cos((lat * Math.PI) / 180);
-      const lngStep = latStep / Math.max(circumference, 0.15);
-      for (let lng = -180; lng < 180; lng += lngStep) {
-        if (!isLand(lng, lat)) continue;
-        const p = latLngToVec3(lat, lng, RADIUS);
-        targets.push(p.x, p.y, p.z);
-        // scatter: same direction, blasted far out with jitter
-        const dir = p.clone().normalize();
-        const jitter = new THREE.Vector3(
-          (Math.random() - 0.5) * 10,
-          (Math.random() - 0.5) * 10,
-          (Math.random() - 0.5) * 10
-        );
-        const s = dir.multiplyScalar(RADIUS + 4 + Math.random() * 9).add(jitter);
-        scatters.push(s.x, s.y, s.z);
-        offsets.push(Math.random());
-        shades.push(Math.random());
-      }
-    }
-
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(targets), 3));
-    geo.setAttribute('aScatter', new THREE.BufferAttribute(new Float32Array(scatters), 3));
-    geo.setAttribute('aOffset', new THREE.BufferAttribute(new Float32Array(offsets), 1));
-    geo.setAttribute('aShade', new THREE.BufferAttribute(new Float32Array(shades), 1));
-    return geo;
-  }, []);
-
-  useEffect(() => () => geo.dispose(), [geo]);
-
-  const uniforms = useMemo(
-    () => ({
-      uProgress: { value: 0 },
-      uColorA: { value: new THREE.Color('#2FA084') },
-      uColorB: { value: new THREE.Color('#6FCF97') },
-    }),
-    []
-  );
+  const uniforms = useMemo(() => ({ uProgress: { value: 0 } }), []);
 
   useFrame((_, delta) => {
     if (mat.current) {
@@ -279,7 +337,13 @@ function Arcs({ progressRef }: { progressRef: MutableRefObject<number> }) {
 }
 
 /* ---------- Assembly ---------- */
-function Globe({ progressRef }: { progressRef: MutableRefObject<number> }) {
+function Globe({
+  geo,
+  progressRef,
+}: {
+  geo: THREE.BufferGeometry;
+  progressRef: MutableRefObject<number>;
+}) {
   const group = useRef<THREE.Group>(null);
   const occluder = useRef<THREE.MeshBasicMaterial>(null);
   const atmosphere = useRef<THREE.ShaderMaterial>(null);
@@ -314,9 +378,9 @@ function Globe({ progressRef }: { progressRef: MutableRefObject<number> }) {
       {/* dark inner sphere occludes far-side dots once assembled */}
       <mesh scale={0.985}>
         <sphereGeometry args={[RADIUS, 48, 48]} />
-        <meshBasicMaterial ref={occluder} color="#0C1512" transparent opacity={0} />
+        <meshBasicMaterial ref={occluder} color="#0A1418" transparent opacity={0} />
       </mesh>
-      <GlobeDots progressRef={progressRef} />
+      <GlobeDots geo={geo} progressRef={progressRef} />
       <Arcs progressRef={progressRef} />
       {/* atmosphere rim */}
       <mesh scale={1.18}>
@@ -354,6 +418,33 @@ export default function GlobeScene({
   progressRef: MutableRefObject<number>;
   active?: boolean;
 }) {
+  const [geo, setGeo] = useState<THREE.BufferGeometry | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    let built: THREE.BufferGeometry | null = null;
+
+    loadEarthMap()
+      .then((map) => {
+        if (cancelled) return;
+        built = buildGeometry(map);
+        setGeo(built);
+      })
+      .catch(() => {
+        // Texture unavailable — the finale keeps its copy and arcs, it just
+        // does not draw the globe. Never block the contact section on this.
+      });
+
+    return () => {
+      cancelled = true;
+      built?.dispose();
+    };
+  }, []);
+
+  // Nothing to draw until the map is sampled; the section fades the whole
+  // canvas in on scroll anyway, so there is no visible pop.
+  if (!geo) return null;
+
   return (
     <Canvas
       camera={{ position: [0, 0, 6.2], fov: 45 }}
@@ -364,7 +455,7 @@ export default function GlobeScene({
       aria-hidden
     >
       <ResponsiveCamera />
-      <Globe progressRef={progressRef} />
+      <Globe geo={geo} progressRef={progressRef} />
     </Canvas>
   );
 }

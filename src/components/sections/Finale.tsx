@@ -10,7 +10,9 @@ import {
   useInView,
 } from 'framer-motion';
 import Magnetic from '../Magnetic';
+import SocialLinks from '../SocialLinks';
 import { CONTACT } from '@/lib/data';
+import { RESUME_PATH } from '@/lib/site';
 
 const GlobeScene = dynamic(() => import('../three/GlobeScene'), {
   ssr: false,
@@ -64,13 +66,13 @@ export default function Finale() {
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent mb-6">
               07 · Connect
             </p>
-            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tightest text-paper leading-[1.05]">
+            <div className="text-4xl md:text-6xl font-extrabold tracking-tightest text-paper leading-[1.05]">
               AI systems connecting
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-accent">
                 the world.
               </span>
-            </h2>
+            </div>
           </div>
         </motion.div>
 
@@ -90,7 +92,7 @@ export default function Finale() {
                 that actually ships.
               </span>
             </h2>
-            <p className="text-lg text-paper/55 max-w-xl mx-auto mb-12">
+            <p className="text-lg text-paper/70 max-w-xl mx-auto mb-12">
               Open to remote AI engineering roles in GenAI, data intelligence,
               and production ML — from anywhere, to anywhere. Replies usually
               within a day.
@@ -115,7 +117,21 @@ export default function Finale() {
               </Magnetic>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 font-mono text-xs text-paper/40">
+            <div className="flex flex-col items-center gap-6 mb-12">
+              <SocialLinks className="justify-center flex-wrap" />
+              <a
+                href={RESUME_PATH}
+                download
+                className="inline-flex items-center gap-2.5 text-sm font-medium text-paper/80 hover:text-accent transition-colors duration-300"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                  <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Download résumé (PDF)
+              </a>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 font-mono text-xs text-paper/65">
               <span>{CONTACT.location}</span>
               <span aria-hidden>·</span>
               <span>Remote-friendly</span>
@@ -129,15 +145,6 @@ export default function Finale() {
         </motion.div>
       </div>
 
-      {/* Footer rides at the very end of the act */}
-      <footer className="absolute bottom-0 left-0 right-0 border-t border-paper/[0.07]">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-7 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-paper/35">
-          <span>© {new Date().getFullYear()} {CONTACT.name}</span>
-          <span className="font-mono text-xs">
-            Built for performance · Designed in the dark
-          </span>
-        </div>
-      </footer>
     </section>
   );
 }

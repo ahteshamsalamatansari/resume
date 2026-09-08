@@ -21,7 +21,7 @@ export default function SectionHeading({
           {index}
         </span>
         <span className="h-px w-14 bg-gradient-to-r from-accent/60 to-transparent" />
-        <span className="font-mono text-xs text-paper/40 tracking-[0.25em] uppercase">
+        <span className="font-mono text-xs text-paper/60 tracking-[0.25em] uppercase">
           {kicker}
         </span>
       </FadeUp>

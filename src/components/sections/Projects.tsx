@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Link from 'next/link';
 import {
   motion,
   useScroll,
@@ -82,21 +83,26 @@ function StackCard({
             <span className="font-mono text-xs uppercase tracking-[0.25em] text-accent/90">
               {project.category}
             </span>
-            <span className="font-mono text-xs text-paper/35">{project.year}</span>
+            <span className="font-mono text-xs text-paper/60">{project.year}</span>
           </div>
 
           <div className="grid md:grid-cols-12 gap-8 items-end">
             <div className="md:col-span-8">
-              <span className="block font-mono text-sm text-paper/25 mb-4 tabular-nums">
+              <span className="block font-mono text-sm text-paper/60 mb-4 tabular-nums">
                 {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
               </span>
               <h3 className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tightest text-paper mb-5 leading-[1.02]">
-                {project.title}
+                <Link
+                  href={`/work/${project.slug}`}
+                  className="hover:text-accent transition-colors duration-300"
+                >
+                  {project.title}
+                </Link>
               </h3>
-              <p className="text-paper/55 leading-relaxed max-w-xl mb-7">
+              <p className="text-paper/70 leading-relaxed max-w-xl mb-7">
                 {project.description}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-7">
                 {project.stack.map((tech) => (
                   <span
                     key={tech}
@@ -106,13 +112,26 @@ function StackCard({
                   </span>
                 ))}
               </div>
+              <Link
+                href={`/work/${project.slug}`}
+                className="group/link inline-flex items-center gap-2.5 text-sm font-semibold text-accent hover:text-paper transition-colors duration-300"
+              >
+                Read the build
+                <svg
+                  width="15" height="15" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2" aria-hidden
+                  className="transition-transform duration-300 group-hover/link:translate-x-1"
+                >
+                  <path d="M5 12h14m0 0l-6-6m6 6l-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
             </div>
 
             <div className="md:col-span-4 md:text-right md:border-l border-paper/10 md:pl-8">
               <div className="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-accent to-secondary tabular-nums">
                 {project.metric}
               </div>
-              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-paper/40 mt-2">
+              <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-paper/60 mt-2">
                 {project.metricLabel}
               </div>
             </div>
@@ -139,13 +158,29 @@ export default function Projects() {
       <div ref={deckRef} className="relative max-w-[1400px] mx-auto px-6 md:px-12 pb-24">
         {PROJECTS.map((project, i) => (
           <StackCard
-            key={project.title}
+            key={project.slug}
             project={project}
             index={i}
             total={PROJECTS.length}
             progress={scrollYProgress}
           />
         ))}
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 pb-24">
+        <Link
+          href="/work"
+          className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-full border border-paper/20 text-paper hover:border-accent hover:text-accent transition-colors duration-300"
+        >
+          All {PROJECTS.length} projects
+          <svg
+            width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" aria-hidden
+            className="transition-transform duration-300 group-hover:translate-x-1"
+          >
+            <path d="M5 12h14m0 0l-6-6m6 6l-6 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </Link>
       </div>
     </section>
   );

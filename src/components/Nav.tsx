@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   motion,
   AnimatePresence,
@@ -9,12 +11,13 @@ import {
   useMotionValueEvent,
 } from 'framer-motion';
 import Magnetic from './Magnetic';
-import { NAV_ITEMS, CONTACT } from '@/lib/data';
+import { NAV_ITEMS } from '@/lib/data';
 
 export default function Nav() {
   const [time, setTime] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const pathname = usePathname();
 
   const { scrollY, scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
@@ -39,6 +42,9 @@ export default function Nav() {
     return () => clearInterval(t);
   }, []);
 
+  const isActive = (href: string) =>
+    href === '/' ? pathname === '/' : pathname.startsWith(href);
+
   return (
     <motion.header
       className="fixed top-0 left-0 right-0 z-50"
@@ -46,65 +52,67 @@ export default function Nav() {
       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="glass border-b border-paper/[0.06]">
-        <nav className="max-w-[1400px] mx-auto flex items-center justify-between px-6 md:px-12 py-4">
-          <motion.a
-            href="#top"
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.9, duration: 0.7 }}
+        <nav
+          aria-label="Primary"
+          className="max-w-[1400px] mx-auto flex items-center justify-between px-6 md:px-12 py-4"
+        >
+          <Link
+            href="/"
             className="flex items-center gap-2.5 font-bold tracking-tight text-paper"
           >
-            <span className="relative flex w-2 h-2">
+            <span className="relative flex w-2 h-2" aria-hidden>
               <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-60 animate-ping" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
             </span>
             Ahtesham<span className="text-accent">.ai</span>
-          </motion.a>
+          </Link>
 
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.0, duration: 0.7 }}
-            className="hidden lg:flex items-center gap-1"
-          >
+          <div className="hidden lg:flex items-center gap-1">
             {NAV_ITEMS.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
-                className="group relative px-3.5 py-2 text-sm text-paper/55 hover:text-paper transition-colors duration-300"
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                className={`group relative px-3.5 py-2 text-sm transition-colors duration-300 ${
+                  isActive(item.href)
+                    ? 'text-accent'
+                    : 'text-paper/70 hover:text-paper'
+                }`}
               >
                 {item.label}
-                <span className="absolute left-3.5 right-3.5 bottom-1 h-px bg-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out-expo" />
-              </a>
+                <span
+                  className={`absolute left-3.5 right-3.5 bottom-1 h-px bg-accent origin-left transition-transform duration-300 ease-out-expo ${
+                    isActive(item.href)
+                      ? 'scale-x-100'
+                      : 'scale-x-0 group-hover:scale-x-100'
+                  }`}
+                />
+              </Link>
             ))}
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.1, duration: 0.7 }}
-            className="hidden lg:flex items-center gap-5"
-          >
-            <span className="font-mono text-xs text-paper/35 tabular-nums">
+          <div className="hidden lg:flex items-center gap-5">
+            <span className="font-mono text-xs text-paper/60 tabular-nums">
               {time} IST
             </span>
             <Magnetic>
-              <a
-                href={`mailto:${CONTACT.email}`}
+              <Link
+                href="/contact"
                 className="inline-block px-5 py-2.5 text-sm font-semibold rounded-full bg-accent text-dark hover:bg-paper transition-colors duration-300"
               >
                 Let&apos;s talk
-              </a>
+              </Link>
             </Magnetic>
-          </motion.div>
+          </div>
 
           <button
-            className="lg:hidden p-2 text-paper/70"
+            className="lg:hidden p-2 text-paper/80"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
               {menuOpen ? (
                 <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
               ) : (
@@ -118,40 +126,44 @@ export default function Nav() {
         <motion.div
           className="absolute bottom-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-primary via-secondary to-accent"
           style={{ scaleX: progress }}
+          aria-hidden
         />
       </div>
 
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="lg:hidden overflow-hidden glass border-b border-paper/[0.06]"
           >
-            <div className="flex flex-col px-6 py-6 gap-1">
-              {NAV_ITEMS.map((item, i) => (
-                <motion.a
+            <nav aria-label="Mobile" className="flex flex-col px-6 py-6 gap-1">
+              {NAV_ITEMS.map((item) => (
+                <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="py-2.5 text-lg font-medium text-paper/75 hover:text-accent transition-colors"
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                  className={`py-2.5 text-lg font-medium transition-colors ${
+                    isActive(item.href)
+                      ? 'text-accent'
+                      : 'text-paper/85 hover:text-accent'
+                  }`}
                 >
                   {item.label}
-                </motion.a>
+                </Link>
               ))}
-              <a
-                href={`mailto:${CONTACT.email}`}
+              <Link
+                href="/contact"
                 onClick={() => setMenuOpen(false)}
                 className="mt-3 py-2.5 text-lg font-medium text-accent"
               >
                 Let&apos;s talk →
-              </a>
-            </div>
+              </Link>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>

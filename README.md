@@ -1,149 +1,167 @@
-# 🚀 AI Engineer Portfolio — Ahtesham Ansari
+# AI Engineer Portfolio — Ahtesham Salamat Ansari
 
-A premium, interactive, and high-performance developer portfolio and landing page designed for an AI Engineer. Built using Next.js 14, React Three Fiber (WebGL/Three.js), Tailwind CSS, Framer Motion, and Lenis Scroll.
-
----
-
-## 🎨 Project Overview & Design System
-
-The portfolio is structured to showcase **production GenAI systems, RAG workflows, MLOps, and big data engineering** with a futuristic, cinematic feel:
-
-- **Cinematic Texture:** Features an animated noise grain overlay.
-- **Dynamic 3D Hero Scene:** Built using React Three Fiber to display a live-rendered neural/particle field in the background.
-- **Ultra-Smooth Scrolling:** Powered by Lenis Scroll to deliver native-feeling inertia scroll.
-- **Micro-Interactions:** Includes a custom magnetic cursor and hover states to enhance UX.
-- **Harmonious Color Palette:**
-  - `Dark` (`#0A0A0A`): Futuristic base background.
-  - `Primary` (`#1F6F5F`): Deep emerald branding.
-  - `Secondary` (`#2FA084`): Vibrant teal secondary accents.
-  - `Accent` (`#6FCF97`): Bright mint accent for highlights and active dots.
-  - `Paper` (`#EEEEEE`): High-contrast off-white text.
+A production portfolio for an AI Engineer: a cinematic single-page homepage backed by a
+full set of crawlable, schema-marked content routes. Built with Next.js 14 (App Router),
+React Three Fiber, Tailwind CSS, Framer Motion and Lenis.
 
 ---
 
-## ⚡ Key Sections & Features
+## ⚙️ Configuration
 
-1. **Hero Section:** Live WebGL neural field backdrop, strong positioning statement, and automated metric highlights (50M+ processed records, 180ms latency, etc.).
-2. **About Section:** Quick summary of experience and engineering focus.
-3. **Skills Matrix:** Organized categories covering Generative AI, Vector & Retrieval, Cloud/MLOps, and Big Data Engineering.
-4. **Projects & Deep Dives:** Showcases impact-driven projects with exact metrics and tech stacks.
-5. **Interactive Case Studies:** Expanded breakdown of BizProspex and FunnelByte workflows.
-6. **Experience Timeline:** Highlights impact, MLOps metrics, and previous achievements.
-7. **Writing / Blog:** Highlights deep-dives in engineering, RAG latency, and LLM guardrails.
-8. **Navigation & Magnetic Controls:** Magnetic menu buttons and magnetic call-to-actions.
+Everything domain- and identity-related lives in [`src/lib/site.ts`](src/lib/site.ts) —
+no other file hardcodes a URL.
+
+- **`SITE_URL`** — `https://ahteshamsalamatansari.vercel.app`. Canonicals, sitemap, Open
+  Graph URLs, JSON-LD `@id`s and `llms.txt` all derive from it. Override without editing
+  the file by setting `NEXT_PUBLIC_SITE_URL`; change this one line if you move to a
+  custom domain.
+- **`SOCIALS`** — the `sameAs` identity graph (LinkedIn, GitHub, X, Instagram, Medium).
+  This is what lets Google and LLM answer engines confirm the site and those profiles are
+  one person. Empty entries are filtered out everywhere, so adding Google Scholar later is
+  a one-line change.
+
+### Search-engine verification
+
+Both engines are verified by the **file method**, and those files must stay in `public/`
+to be served from the domain root:
+
+- `public/google57d36c46b130cd35.html` → Google Search Console
+- `public/BingSiteAuth.xml` → Bing Webmaster Tools
+
+`VERIFICATION.bing` in `site.ts` additionally emits an `msvalidate.01` meta tag reusing
+the same GUID, as a redundant signal. `VERIFICATION.google` is deliberately left blank —
+Google's meta-tag token differs from the token in its filename, so it cannot be derived
+from the file. Fill it in only if you also generate an HTML-tag verification.
+
+> Because `.vercel.app` is on the Public Suffix List, use a **URL-prefix** property in
+> Search Console, not a Domain property. Submit the production URL — Vercel serves
+> `x-robots-tag: noindex` on preview deployments.
 
 ---
 
-## 🛠️ Tech Stack
+## 🗺️ Routes
 
-- **Core:** [Next.js 14](https://nextjs.org/) (App Router, React 18, TypeScript)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **3D Graphics:** [Three.js](https://threejs.org/) via [`@react-three/fiber`](https://github.com/pmndrs/react-three-fiber) & [`@react-three/drei`](https://github.com/pmndrs/drei)
-- **Animations:** [Framer Motion](https://www.framer.com/motion/)
-- **Smooth Scroll:** [Lenis](https://lenis.darkroom.engineering/)
+| Route | What it is |
+| --- | --- |
+| `/` | Cinematic single-page experience (hero, skills, work, deep dives, experience, writing, FAQ, globe finale) |
+| `/about` | Full profile, experience, skills and FAQ — the entity page |
+| `/work` · `/work/[slug]` | Project index + one full page per project (5) |
+| `/case-studies` · `/case-studies/[slug]` | Index + full problem → approach → result narrative (2) |
+| `/writing` · `/writing/[slug]` | Article index + full articles (3) |
+| `/resume` | HTML résumé (indexable) with the PDF download alongside |
+| `/contact` | Contact form, copy-to-clipboard email, FAQ |
+
+Generated endpoints: `/robots.txt`, `/sitemap.xml`, `/llms.txt`, `/manifest.webmanifest`,
+`/icon`, `/apple-icon`, `/opengraph-image`, `/twitter-image`.
+
+All content is driven by [`src/lib/data.ts`](src/lib/data.ts) — adding an entry there
+creates its page, its sitemap row and its JSON-LD automatically.
+
+---
+
+## 🔍 SEO / AEO
+
+- **Structured data** (`src/lib/schema.ts`): `Person`, `WebSite`, `ProfilePage`,
+  `FAQPage`, `BreadcrumbList`, `ItemList`, `Article`, `BlogPosting`, `CreativeWork`,
+  `DigitalDocument` — all cross-referenced by `@id` into one entity graph.
+- **`llms.txt`** — a curated plain-Markdown summary for LLM crawlers, generated from the
+  same data as the site so it cannot drift.
+- **`robots.txt`** explicitly allows the AI crawlers (GPTBot, ClaudeBot, PerplexityBot,
+  Google-Extended, and others) as a deliberate opt-in.
+- **Long-form prose is server-rendered plain markup** — never opacity-gated — so crawlers
+  that do not execute JavaScript still read the full text.
+- Per-route canonicals, Open Graph and Twitter cards, with a build-time generated
+  1200×630 share image.
+
+---
+
+## 🎨 Design System
+
+- `Dark` `#0A0A0A` · `Primary` `#1F6F5F` · `Secondary` `#2FA084` · `Accent` `#6FCF97` · `Paper` `#EEEEEE`
+- Type: Plus Jakarta Sans + JetBrains Mono, self-hosted via `next/font`
+- Body text is held at `/55` opacity or above for WCAG AA contrast; the marquee is the one
+  deliberate exception (large display type, which has a lower threshold).
+
+---
+
+## 🌍 The globe
+
+`src/components/three/GlobeScene.tsx` builds the finale globe as a particle cloud that
+assembles on scroll. Land and colour both come from a real NASA Blue Marble map at
+`public/textures/earth-map.png` (RGB = true surface colour, alpha = land mask, 512×256,
+~180 KB), sampled per dot at runtime.
+
+Grading constants at the top of the file:
+
+| Constant | Effect |
+| --- | --- |
+| `REALISM` | `1` = raw satellite colour, `0` = the original all-emerald globe |
+| `GAIN` / `LIFT` | Brightness — Blue Marble is dark against `#0A0A0A` |
+| `SATURATION` | Pushes each dot away from its own luma; without it, brightening greys everything out |
+
+Regenerate the texture with `scripts/` inputs from NASA Visible Earth (public domain) if
+you ever want a different resolution.
 
 ---
 
 ## 🚀 Getting Started
 
-Follow these steps to run the portfolio locally on your machine.
-
-### 📋 Prerequisites
-
-Ensure you have the following installed:
-- [Node.js](https://nodejs.org/) (v18.x or later recommended)
-- **npm** (comes bundled with Node.js) or another package manager (e.g. yarn, pnpm)
-
-### 📥 1. Clone the Repository
-
-Clone the project from GitHub and navigate into the directory:
-
-```bash
-git clone https://github.com/ahteshamsalamatansari/resume.git
-cd resume
-```
-
-### 📦 2. Install Dependencies
-
-Install all required node modules:
-
 ```bash
 npm install
+npm run dev     # http://localhost:3000
+npm run build   # production build
+npm run start   # serve the production build
 ```
 
-### 💻 3. Run the Development Server
-
-Start the local Next.js server:
-
-```bash
-npm run dev
-```
-
-Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to see the site live.
-
-### 🏗️ 4. Build for Production
-
-To create an optimized production build of the project:
-
-```bash
-npm run build
-```
-
-To run the production-built application locally:
-
-```bash
-npm run start
-```
+Requires Node 18+.
 
 ---
 
 ## 📂 Project Structure
 
 ```text
+├── public/
+│   ├── textures/earth-map.png            # NASA Blue Marble colour + land mask
+│   └── Ahtesham-Ansari-AI-Engineer-Resume.pdf
 ├── src/
 │   ├── app/
-│   │   ├── globals.css      # Custom utility classes, animation keyframes, grain overlay
-│   │   ├── layout.tsx       # Root layout, Google fonts definition, metadata definitions
-│   │   └── page.tsx         # Main entry point importing layout sections
+│   │   ├── layout.tsx                    # metadata, fonts, JSON-LD, skip link, analytics
+│   │   ├── page.tsx                      # single-page homepage
+│   │   ├── about|work|case-studies|writing|resume|contact/
+│   │   ├── robots.ts / sitemap.ts / manifest.ts / llms.txt/
+│   │   ├── icon.tsx / apple-icon.tsx / opengraph-image.tsx / twitter-image.tsx
+│   │   └── not-found.tsx
 │   ├── components/
-│   │   ├── sections/        # Section-specific components (Hero, About, Projects, etc.)
-│   │   ├── three/           # WebGL/Three.js canvases, particle fields & custom shaders
-│   │   ├── Cursor.tsx       # Custom mouse follower utility
-│   │   ├── Magnetic.tsx     # Magnetic force hover wrapper
-│   │   ├── Nav.tsx          # Smooth overlay navigation menu
-│   │   ├── Preloader.tsx    # Entrance loader screen
-│   │   ├── SectionHeading.tsx # Reusable section titles
-│   │   ├── SmoothScroll.tsx # Lenis wrapper configuration
-│   │   └── TextReveal.tsx   # Character/word slide-in animations
+│   │   ├── sections/                     # homepage sections
+│   │   ├── three/                        # WebGL scenes and shaders
+│   │   ├── PageShell.tsx                 # sub-page layout + breadcrumbs
+│   │   ├── Prose.tsx                     # long-form renderer
+│   │   ├── ContactForm.tsx / SocialLinks.tsx / Footer.tsx / JsonLd.tsx
+│   │   └── Nav / Cursor / Magnetic / Preloader / SmoothScroll / TextReveal
 │   └── lib/
-│       └── data.ts          # Centralized data file (Skills, Projects, Experience, Contacts)
-├── public/                  # Static assets & PDF resume downloads
-├── package.json             # Scripts & dependencies
-├── tailwind.config.js       # Custom design system tokens
-└── tsconfig.json            # TypeScript configuration
+│       ├── data.ts                       # all content
+│       ├── site.ts                       # domain + identity (edit this)
+│       └── schema.ts                     # JSON-LD builders
+└── next.config.js                        # security headers, caching
 ```
 
 ---
 
 ## ✍️ Updating Content
 
-All text, statistics, skills, case studies, and contact details are driven by a centralized config file. To update any information on the portfolio:
+Everything is in [`src/lib/data.ts`](src/lib/data.ts): `PROJECTS`, `CASE_STUDIES`,
+`BLOG_POSTS`, `EXPERIENCE`, `SKILL_GROUPS`, `METRICS`, `FAQS`, `CONTACT`, `NAV_ITEMS`.
+Each project, case study and post carries a `slug` and a `body` of `{ heading, paragraphs,
+bullets }` blocks — add a record and its page, sitemap entry and schema appear on the next
+build.
 
-1. Open the data file: [`src/lib/data.ts`](file:///D:/Main/1-January/portfolio/resume/src/lib/data.ts)
-2. Edit the corresponding constants:
-   - `PROJECTS`
-   - `CASE_STUDIES`
-   - `EXPERIENCE`
-   - `SKILL_GROUPS`
-   - `METRICS`
-   - `CONTACT`
-3. Save the changes. The dev server will hot-reload instantly.
+> The three articles under `BLOG_POSTS` are drafts written from the metrics and systems
+> described elsewhere in this repo. Review them for accuracy against your own experience
+> before publishing.
 
 ---
 
-## 📩 Contact & Socials
+## 📩 Contact
 
-- **Developer:** Ahtesham Salamat Ansari
-- **Email:** ahteshamsalamat@gmail.com
-- **Phone:** +91 74159 95966
-- **Location:** India (GMT+5:30)
+- **Ahtesham Salamat Ansari** — AI Engineer
+- ahteshamsalamat@gmail.com · +91 74159 95966 · India (GMT+5:30)

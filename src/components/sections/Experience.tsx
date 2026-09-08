@@ -55,7 +55,7 @@ export default function Experience() {
                     <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-paper group-hover:text-accent transition-colors duration-500">
                       {job.role}
                     </h3>
-                    <p className="text-sm text-paper/45 mt-1">{job.company}</p>
+                    <p className="text-sm text-paper/60 mt-1">{job.company}</p>
                   </div>
                   <ul className="md:col-span-5 space-y-2.5">
                     {job.impact.map((line) => (

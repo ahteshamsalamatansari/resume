@@ -38,7 +38,7 @@ export default function Skills() {
 
                   <div className="relative flex items-center justify-between gap-6 py-8 md:py-10">
                     <div className="flex items-baseline gap-6 md:gap-10 min-w-0">
-                      <span className="font-mono text-sm text-paper/30 tabular-nums shrink-0">
+                      <span className="font-mono text-sm text-paper/60 tabular-nums shrink-0">
                         0{i + 1}
                       </span>
                       <h3
@@ -53,7 +53,7 @@ export default function Skills() {
                       animate={{ rotate: isOpen ? 45 : 0 }}
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       className={`shrink-0 text-2xl font-light transition-colors duration-300 ${
-                        isOpen ? 'text-accent' : 'text-paper/30'
+                        isOpen ? 'text-accent' : 'text-paper/60'
                       }`}
                       aria-hidden
                     >
@@ -71,7 +71,7 @@ export default function Skills() {
                         className="overflow-hidden"
                       >
                         <div className="pb-10 md:pl-[4.5rem]">
-                          <p className="text-paper/50 text-sm md:text-base mb-6 max-w-lg">
+                          <p className="text-paper/60 text-sm md:text-base mb-6 max-w-lg">
                             {group.blurb}
                           </p>
                           <div className="flex flex-wrap gap-2.5">

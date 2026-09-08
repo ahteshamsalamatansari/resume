@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 import SectionHeading from '../SectionHeading';
+import Portrait from '../Portrait';
 import { FadeUp } from '../TextReveal';
 
 const MANIFESTO =
@@ -70,11 +71,14 @@ export default function About() {
           </p>
 
           <div className="lg:col-span-4 lg:pt-2">
-            <div className="lg:sticky lg:top-32 space-y-0">
+            <div className="lg:sticky lg:top-32">
+              <FadeUp y={20}>
+                <Portrait className="mb-8 max-w-[320px]" />
+              </FadeUp>
               {FACTS.map((row, i) => (
                 <FadeUp key={row.k} delay={i * 0.08} y={20}>
                   <div className="group flex items-baseline justify-between gap-6 py-4 border-b border-paper/[0.08] hover:border-accent/30 transition-colors duration-500">
-                    <span className="font-mono text-xs uppercase tracking-[0.2em] text-paper/35 shrink-0">
+                    <span className="font-mono text-xs uppercase tracking-[0.2em] text-paper/60 shrink-0">
                       {row.k}
                     </span>
                     <span className="text-sm text-paper/80 text-right">{row.v}</span>
@@ -82,7 +86,7 @@ export default function About() {
                 </FadeUp>
               ))}
               <FadeUp delay={0.4} y={20}>
-                <p className="pt-6 font-mono text-xs leading-relaxed text-paper/35">
+                <p className="pt-6 font-mono text-xs leading-relaxed text-paper/60">
                   <span className="text-accent">//</span> 3+ years shipping AI
                   that survives contact with production traffic.
                 </p>
