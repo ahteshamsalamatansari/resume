@@ -1,15 +1,12 @@
 import { SiteHeader } from "@/components/site-header";
+import { JsonLd } from "@/components/json-ld";
 import { buildJsonLd } from "@/lib/schema";
 import { Approach, FinalCta, Hero, Overview, Projects, Services, SiteFooter, Skills } from "@/components/sections";
 
 export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        // Static, server-built JSON; escape "<" so content can never close the tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd()).replace(/</g, "\\u003c") }}
-      />
+      <JsonLd data={buildJsonLd()} />
       <a
         href="#main"
         className="sr-only z-50 rounded-md bg-ink px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"

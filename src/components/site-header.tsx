@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { navItems } from "@/config/site";
 import { Container, Signature, UpworkButton } from "./ui";
@@ -12,13 +13,13 @@ export function SiteHeader() {
   // Highlight the nav item for the section currently in view.
   useEffect(() => {
     const sections = navItems
-      .map((item) => document.querySelector<HTMLElement>(item.href))
+      .map((item) => document.getElementById(item.href.split("#")[1]))
       .filter((el): el is HTMLElement => el !== null);
 
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length) setActive(`#${visible[0].target.id}`);
+        if (visible.length) setActive(`/#${visible[0].target.id}`);
       },
       { rootMargin: "-45% 0px -50% 0px" },
     );
@@ -36,9 +37,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur-sm">
       <Container className="flex h-16 items-center justify-between gap-6">
-        <a href="#top" className="text-ink transition-colors hover:text-brand-ink" aria-label="Ahtesham Salamat Ansari, back to top">
+        <Link href="/" className="text-ink transition-colors hover:text-brand-ink" aria-label="Ahtesham Salamat Ansari, home">
           <Signature className="text-[26px] sm:text-[28px]" />
-        </a>
+        </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-1">

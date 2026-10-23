@@ -1,6 +1,6 @@
 # Ahtesham Salamat Ansari: AI Engineer portfolio
 
-Single-page portfolio for **AI Engineer | LLM Applications, RAG, AI Agents & Python Automation**.
+Portfolio for **AI Engineer | LLM Applications, RAG, AI Agents & Python Automation**: a home page plus a case-study page for each project.
 
 Live: https://ahteshamsalamatansari.vercel.app
 
@@ -24,7 +24,9 @@ npm run lint
 | `src/config/site.ts` | Upwork profile URL (the only hiring link), site URL, verification IDs, title/description |
 | `src/content/profile.ts` | All page content: services, projects, skills, process, experience, certifications |
 | `src/components/` | Sections, header, mockups, shared UI |
-| `src/app/` | Layout/metadata, page, robots, sitemap, manifest, OG image, `llms.txt` |
+| `src/app/` | Layout/metadata, home page, robots, sitemap, manifest, OG image, `llms.txt` |
+| `src/app/projects/` | Case-study index and `[slug]` detail pages, generated from `projects` |
+| `src/lib/` | JSON-LD builders (`schema.ts`) and the shared social card renderer (`og.tsx`) |
 | `docs/SEO.md` | SEO implementation, redirects, verification and post-deploy checklist |
 
 ## Content rules

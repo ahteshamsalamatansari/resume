@@ -1,4 +1,5 @@
-import { ArrowUpRight, Award, Bot, Briefcase, FileSearch, GraduationCap, MessagesSquare, Workflow } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight, Award, Bot, Briefcase, FileSearch, GraduationCap, MessagesSquare, Workflow } from "lucide-react";
 import { UPWORK_PROFILE_URL } from "@/config/site";
 import {
   agentBuilds,
@@ -190,7 +191,7 @@ export function Services() {
   );
 }
 
-function ResultList({ results }: { results: Project["results"] }) {
+export function ResultList({ results }: { results: Project["results"] }) {
   return (
     <dl className="flex flex-wrap gap-x-8 gap-y-3">
       {results.map((r) => (
@@ -200,6 +201,19 @@ function ResultList({ results }: { results: Project["results"] }) {
         </div>
       ))}
     </dl>
+  );
+}
+
+function CaseStudyLink({ project }: { project: Project }) {
+  return (
+    <Link
+      href={`/projects/${project.slug}`}
+      className="group inline-flex items-center gap-1.5 text-sm font-semibold text-brand-ink underline-offset-4 hover:underline"
+    >
+      Read the case study
+      <ArrowRight aria-hidden className="size-4 transition-transform group-hover:translate-x-0.5" />
+      <span className="sr-only">: {project.title}</span>
+    </Link>
   );
 }
 
@@ -238,6 +252,9 @@ function FeaturedProject({ project, index }: { project: Project; index: number }
         <div className="mt-7 border-t border-line pt-5">
           <ResultList results={project.results} />
         </div>
+        <div className="mt-6">
+          <CaseStudyLink project={project} />
+        </div>
       </div>
 
       {project.mockup && (
@@ -260,17 +277,22 @@ function CompactProject({ project }: { project: Project }) {
     >
       <p className="text-xs font-medium text-muted">{project.context}</p>
       <h3 id={`${project.id}-title`} className="mt-1.5 text-lg font-bold tracking-tight text-ink">
-        {project.title}
+        <Link href={`/projects/${project.slug}`} className="hover:text-brand-ink">
+          {project.title}
+        </Link>
       </h3>
       <p className="mt-3 text-[15px] leading-relaxed text-ink/85">{project.problem}</p>
-      <p className="mb-6 mt-3 text-[15px] leading-relaxed text-muted">{project.approach.join(" ")}</p>
-      <ul aria-label="Tools and technologies" className="mt-4 flex flex-wrap gap-1.5">
+      <p className="mt-3 text-[15px] leading-relaxed text-muted">{project.approach.join(" ")}</p>
+      <ul aria-label="Tools and technologies" className="mb-6 mt-4 flex flex-wrap gap-1.5">
         {project.stack.map((t) => (
           <Tag key={t}>{t}</Tag>
         ))}
       </ul>
       <div className="mt-auto border-t border-line pt-4">
         <ResultList results={project.results} />
+        <div className="mt-4">
+          <CaseStudyLink project={project} />
+        </div>
       </div>
     </article>
   );
@@ -287,7 +309,7 @@ export function Projects() {
           id="projects-title"
           eyebrow="Selected projects"
           title="Engineering work and outcomes"
-          intro="Work from my roles at BizProspex, described at summary level. Figures are the ones stated in my Upwork profile."
+          intro="Work from my roles at BizProspex. Figures are the ones stated in my Upwork profile, and each project has a full case study."
         />
 
         <div className="mt-14 rounded-3xl border border-line bg-white p-6 sm:p-10 lg:p-12">
@@ -301,6 +323,16 @@ export function Projects() {
             <CompactProject key={p.id} project={p} />
           ))}
         </div>
+
+        <p className="mt-8">
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-1.5 font-semibold text-brand-ink underline-offset-4 hover:underline"
+          >
+            All case studies
+            <ArrowRight aria-hidden className="size-4" />
+          </Link>
+        </p>
 
         <div className="mt-16">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">

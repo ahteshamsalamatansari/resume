@@ -20,10 +20,10 @@ export function GET() {
     "## Services",
     ...services.map((s) => `- ${s.title}: ${s.problem}`),
     "",
-    "## Selected projects",
+    `## Case studies (${SITE_URL}/projects)`,
     ...projects.map(
       (p) =>
-        `- ${p.title} (${p.context}): ${p.problem} Approach: ${p.approach.join(" ")} Results: ${p.results
+        `- [${p.title}](${SITE_URL}/projects/${p.slug}) (${p.context}): ${p.problem} Approach: ${p.approach.join(" ")} Results: ${p.results
           .map((r) => `${r.value} ${r.label}`)
           .join("; ")}. Stack: ${p.stack.join(", ")}.`,
     ),

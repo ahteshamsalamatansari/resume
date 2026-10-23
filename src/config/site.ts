@@ -42,9 +42,11 @@ export const site = {
     "AI Engineer building LLM applications, RAG systems, AI agents, MCP integrations, and Python automation and data pipelines. Case studies with measured results from production work.",
 } as const;
 
+// Root-relative so they work from case-study pages; on the home page the browser
+// treats them as same-document jumps.
 export const navItems = [
-  { label: "Overview", href: "#overview" },
-  { label: "Services", href: "#services" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
+  { label: "Overview", href: "/#overview" },
+  { label: "Services", href: "/#services" },
+  { label: "Projects", href: "/#projects" },
+  { label: "Skills", href: "/#skills" },
 ] as const;

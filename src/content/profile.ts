@@ -59,7 +59,15 @@ export type Metric = { value: string; label: string };
 
 export type Project = {
   id: string;
+  /** URL segment for /projects/[slug]. Changing it breaks indexed URLs. */
+  slug: string;
   title: string;
+  /** One-sentence summary; used as the page meta description. */
+  summary: string;
+  /** What the result meant in practice, stated only as far as the profile supports. */
+  outcome: string;
+  /** Titles from `services` this work demonstrates. */
+  services: string[];
   context: string;
   problem: string;
   approach: string[];
@@ -71,7 +79,13 @@ export type Project = {
 export const projects: Project[] = [
   {
     id: "outreach",
+    slug: "ai-outreach-drafting-system",
     title: "AI Outreach Drafting System",
+    summary:
+      "An n8n and Airtable MCP workflow that drafts personalized emails for 7,000 prospects and cut daily time on generic replies from 4 hours to 35 minutes.",
+    outcome:
+      "Generic replies that took about 4 hours a day now take 35 minutes, and every one of the 7,000 prospects gets a personalized draft. Runs are monitored from a custom control panel on a VPS, so failures are visible instead of silent.",
+    services: ["AI Agents, MCP & Workflow Automation","LLM Application Development"],
     context: "BizProspex · AI Engineer",
     problem:
       "Replying to prospects with generic messages took hours every day, and every draft was written by hand.",
@@ -89,7 +103,13 @@ export const projects: Project[] = [
   },
   {
     id: "mcq",
+    slug: "generative-mcq-pipeline",
     title: "Generative MCQ Pipeline",
+    summary:
+      "A Python pipeline that crawled source articles with Selenium and Playwright and generated 1.5 million school MCQs with answers using OpenAI, with quality checks.",
+    outcome:
+      "The pipeline produced 1.5 million multiple-choice questions with answers from crawled source articles, with quality checks built into the generation step rather than left to manual review.",
+    services: ["LLM Application Development","Python Automation & Data Pipelines"],
     context: "BizProspex · AI Engineer",
     problem:
       "Producing school multiple-choice questions at scale by hand was not feasible, and generated content needed checks before use.",
@@ -104,7 +124,13 @@ export const projects: Project[] = [
   },
   {
     id: "quality",
+    slug: "b2b-data-validation-deduplication",
     title: "B2B Data Validation & Deduplication",
+    summary:
+      "A SQL-based validation, deduplication and enrichment framework that raised B2B dataset accuracy from 78% to 94%.",
+    outcome:
+      "Dataset accuracy rose from 78% to 94%, so lead lists built from the data started from cleaner, deduplicated records.",
+    services: ["Python Automation & Data Pipelines"],
     context: "BizProspex · Data Intelligence Analyst",
     problem:
       "B2B datasets contained duplicates and inaccurate records, which weakened the lead lists built from them.",
@@ -118,7 +144,13 @@ export const projects: Project[] = [
   },
   {
     id: "etl",
+    slug: "automated-etl-workflows",
     title: "Automated ETL Workflows",
+    summary:
+      "Python ETL workflows scheduled in Apache Airflow that cut manual data processing time by 70%.",
+    outcome:
+      "Manual data processing time dropped by 70%, freeing analyst time for work that needed judgment.",
+    services: ["Python Automation & Data Pipelines"],
     context: "BizProspex · Data Intelligence Analyst",
     problem: "Recurring data processing was done manually and took significant analyst time.",
     approach: ["Automated the ETL steps with Python and scheduled them in Apache Airflow."],
@@ -128,7 +160,13 @@ export const projects: Project[] = [
   },
   {
     id: "research",
+    slug: "competitive-intelligence-research",
     title: "Competitive Intelligence Research",
+    summary:
+      "Python research automation with BeautifulSoup and Selenium used to analyze 10,000+ B2B company profiles from LinkedIn Sales Navigator for ABM campaigns.",
+    outcome:
+      "More than 10,000 B2B company profiles were analyzed, and the insights supported ABM campaigns and go-to-market strategy.",
+    services: ["Python Automation & Data Pipelines"],
     context: "BizProspex · Data Intelligence Analyst",
     problem:
       "ABM and go-to-market campaigns needed structured insight on a large set of target companies.",
@@ -141,7 +179,13 @@ export const projects: Project[] = [
   },
   {
     id: "qa",
+    slug: "automated-data-qa",
     title: "Automated Data QA & Team Lead",
+    summary:
+      "Automated testing and Python validation scripts that cut data error rates by 42%, built while leading a team of 8+ analysts.",
+    outcome:
+      "Error rates fell by 42%, and the team of 8+ analysts worked from shared documentation standards, data modeling practices and knowledge-transfer processes.",
+    services: ["Python Automation & Data Pipelines"],
     context: "BizProspex · Data Quality Analyst & Team Lead",
     problem: "Data projects needed consistent quality checks across a growing analyst team.",
     approach: [
@@ -237,3 +281,5 @@ export const education = {
   school: "Devi Ahilya University",
   period: "2019 – 2023",
 };
+
+export const getProject = (slug: string) => projects.find((p) => p.slug === slug);

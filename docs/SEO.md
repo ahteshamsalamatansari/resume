@@ -8,7 +8,13 @@ How search and social discovery work on this site, what is implemented, and what
 
 ## 1. Positioning and keywords
 
-The site is a single page. It targets one person-name query and a small set of service queries, which match the Upwork profile positioning.
+The home page targets the person-name query and the main service queries, which match the Upwork profile positioning. Each case study page targets the longer, more specific queries for its own project (for example "n8n Airtable MCP outreach automation" or "SQL data validation deduplication").
+
+| Page | URL | Purpose |
+| --- | --- | --- |
+| Home | `/` | Name, role, services, highlights |
+| Case studies index | `/projects` | Hub that links every case study |
+| Case study (×6) | `/projects/[slug]` | One project: problem, approach, outcome, tools, results |
 
 | Intent | Primary terms | Where they appear |
 | --- | --- | --- |
@@ -41,9 +47,13 @@ Rules: every keyword must map to content the page actually shows. Do not add ter
 | URL | Source | Notes |
 | --- | --- | --- |
 | `/robots.txt` | `src/app/robots.ts` | Allows all crawlers; points to the sitemap |
-| `/sitemap.xml` | `src/app/sitemap.ts` | One URL (`/`), `lastmod` from `LAST_UPDATED` |
+| `/sitemap.xml` | `src/app/sitemap.ts` | Home, `/projects` and every case study, generated from `projects` in `src/content/profile.ts`; `lastmod` from `LAST_UPDATED` |
 | `/manifest.webmanifest` | `src/app/manifest.ts` | Name, colors, icons |
-| `/opengraph-image`, `/twitter-image` | `src/app/opengraph-image.tsx` | 1200×630 PNG, Google Sans from `src/app/_fonts` |
+| `/opengraph-image`, `/twitter-image` | `src/app/opengraph-image.tsx` | 1200×630 PNG for the home page |
+| `/projects/opengraph-image` | `src/app/projects/opengraph-image.tsx` | Index card |
+| `/projects/[slug]/opengraph-image` | `src/app/projects/[slug]/opengraph-image.tsx` | One card per case study with its title, stack and results |
+
+All social cards share `src/lib/og.tsx` and are prerendered at build time. Font loading in that file is wrapped in `"use cache"`; without it the file read counts as uncached I/O and every image route becomes on-demand.
 | `/icon.svg`, `/apple-icon` | `src/app/icon.svg`, `src/app/apple-icon.tsx` | Favicon and 180×180 iOS icon |
 | `/llms.txt` | `src/app/llms.txt/route.ts` | Plain-text profile for AI assistants, built from the page content |
 
@@ -55,7 +65,24 @@ One JSON-LD `@graph` on the home page:
 - `ProfilePage`: `mainEntity` is the person; `hasPart` lists services and selected projects with their stated results.
 - `Person`: name, job title, employer (BizProspex), alma mater, `knowsAbout`, four certifications as `EducationalOccupationalCredential`, and `sameAs` pointing only to the Upwork profile.
 
-The graph is generated from `src/content/profile.ts`, the same data the page renders, so it cannot drift from the visible content.
+On `/projects`: a `CollectionPage` with an `ItemList` of every case study, plus a `BreadcrumbList`.
+
+On each `/projects/[slug]`: an `Article` (headline, description, image, author linked to the home-page `Person` by `@id`, tools as keywords) plus a `BreadcrumbList` (Home › Case studies › title).
+
+Every graph is generated from `src/content/profile.ts`, the same data the pages render, so it cannot drift from the visible content.
+
+### Case study metadata (`src/app/projects/[slug]/page.tsx`)
+
+- Title: `<Project title>: Case Study | Ahtesham Salamat Ansari`
+- Description: the project's `summary` field (one sentence with the verified result)
+- Canonical: `/projects/<slug>`; Open Graph `type=article`
+- Pages are statically generated from `generateStaticParams`. An unknown slug calls `notFound()` and returns a real 404.
+
+### Internal linking
+
+- Home project cards link to their case study ("Read the case study"), and the Projects section links to `/projects`.
+- Each case study links back through the breadcrumb, to the related services on the home page, and to the other five case studies.
+- Header navigation uses `/#section` links so it works from every page.
 
 ### On-page
 
@@ -77,14 +104,16 @@ The previous site at this domain had multiple pages that may be indexed. They no
 | Old URL | New destination |
 | --- | --- |
 | `/about` | `/#overview` |
-| `/work`, `/work/*` | `/#projects` |
-| `/case-studies`, `/case-studies/*` | `/#projects` |
+| `/work/data-quality-engine` | `/projects/b2b-data-validation-deduplication` |
+| `/writing/data-quality-playbook-78-to-94` | `/projects/b2b-data-validation-deduplication` |
+| `/work`, `/work/*` | `/projects` |
+| `/case-studies`, `/case-studies/*` | `/projects` |
 | `/writing`, `/writing/*` | `/` |
 | `/resume` | `/` |
 | `/contact` | `/` |
 | `/Ahtesham-Ansari-AI-Engineer-Resume.pdf` | `/` |
 
-The old blog posts (`/writing/*`) and the resume PDF have no equivalent on the new site. Google will likely treat those redirects as soft 404s and drop them from the index over the next few weeks. That is expected. Rankings those posts had will not transfer.
+The two old data-quality pages describe the same work as the new data validation case study, so they redirect straight to it. Other old project and case-study pages described work that is not on the current profile, so they go to the index rather than to an unrelated page. The remaining old blog posts (`/writing/*`) and the resume PDF have no equivalent on the new site. Google will likely treat those redirects as soft 404s and drop them from the index over the next few weeks. That is expected. Rankings those posts had will not transfer.
 
 ## 4. Search engine verification
 
@@ -99,7 +128,7 @@ Both files were copied from the previous site so existing ownership stays valid.
 
 1. **Google Search Console** (property `https://ahteshamsalamatansari.vercel.app`):
    - Sitemaps: submit `sitemap.xml`. Remove the old sitemap if it is listed separately, since it pointed to the pages that now redirect.
-   - URL Inspection on `/`: *Request indexing*.
+   - URL Inspection on `/`, `/projects` and each new or changed `/projects/<slug>`: *Request indexing*.
    - Watch *Pages → Not indexed → Page with redirect* over the next 2–4 weeks; the old URLs should move there.
 2. **Bing Webmaster Tools:** submit the sitemap and use *URL Submission* for `/`.
 3. **Validate:**
@@ -117,7 +146,9 @@ Both files were copied from the previous site so existing ownership stays valid.
 
 ## 6. Maintenance
 
-- **Content changes:** edit `src/content/profile.ts`, then update `LAST_UPDATED` in `src/config/site.ts` so the sitemap `lastmod` changes.
+- **Content changes:** edit `src/content/profile.ts`, then update `LAST_UPDATED` in `src/config/site.ts` so the sitemap `lastmod` and article dates change.
+- **New case study:** add an entry to `projects` with a unique `slug`, a one-sentence `summary` (it becomes the meta description), `outcome`, `services` (titles from `services`) and verified `results`. The page, social card, sitemap entry, index row, JSON-LD and `llms.txt` line are all generated from it. Then request indexing for the new URL in Search Console.
+- **Never rename a slug** without adding a redirect from the old URL in `next.config.ts`.
 - **Custom domain:** add it in Vercel, then set `NEXT_PUBLIC_SITE_URL` for Production (or change the default in `src/config/site.ts`). Canonical, sitemap, robots, Open Graph and JSON-LD all follow. Add the new domain as a property in Search Console and Bing, and keep the `vercel.app` domain redirecting to it.
 - **Social image:** edit `src/app/opengraph-image.tsx`. The bundled fonts are a Latin subset with layout tables removed (the OG renderer cannot parse them). Characters outside basic Latin plus `→ · – ’` will not render; regenerate the subset if you need more.
 
@@ -132,5 +163,5 @@ These are left out on purpose, not by oversight:
 
 ## 8. Known limits
 
-- A single page can rank for the name and a few broad service terms, but it has little depth for long-tail queries. The removed blog posts were the main source of long-tail traffic. Adding individual case-study pages later (e.g. `/projects/outreach-system`) would be the biggest SEO gain, each with its own title, description and `CreativeWork` schema.
+- The case studies are deliberately short: they only state what the Upwork profile supports. Longer pages would rank better for long-tail queries, but only if the extra detail is real. The best next step is adding verified specifics per project (scale, timeline, constraints, what was tried first), not more keywords.
 - A `*.vercel.app` subdomain carries less authority than a custom domain. A custom domain is the second-biggest gain.

@@ -33,15 +33,18 @@ const nextConfig: NextConfig = {
   },
 
   // URLs from the previous multi-page site at this domain. They are indexed,
-  // so send them (301) to the closest section of the single-page site instead
-  // of letting them 404.
+  // so send them (308) to the closest page instead of letting them 404.
+  // Specific mappings must come before the wildcards.
   async redirects() {
+    const dataValidation = "/projects/b2b-data-validation-deduplication";
     return [
       { source: "/about", destination: "/#overview", permanent: true },
-      { source: "/work", destination: "/#projects", permanent: true },
-      { source: "/work/:slug*", destination: "/#projects", permanent: true },
-      { source: "/case-studies", destination: "/#projects", permanent: true },
-      { source: "/case-studies/:slug*", destination: "/#projects", permanent: true },
+      { source: "/work/data-quality-engine", destination: dataValidation, permanent: true },
+      { source: "/writing/data-quality-playbook-78-to-94", destination: dataValidation, permanent: true },
+      { source: "/work", destination: "/projects", permanent: true },
+      { source: "/work/:slug*", destination: "/projects", permanent: true },
+      { source: "/case-studies", destination: "/projects", permanent: true },
+      { source: "/case-studies/:slug*", destination: "/projects", permanent: true },
       { source: "/writing", destination: "/", permanent: true },
       { source: "/writing/:slug*", destination: "/", permanent: true },
       { source: "/resume", destination: "/", permanent: true },
