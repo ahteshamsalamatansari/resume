@@ -1,155 +1,74 @@
-import { ImageResponse } from 'next/og';
-import { CONTACT, METRICS } from '@/lib/data';
-import { PROFILE_DATA_URI } from '@/lib/profile-image';
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import { ImageResponse } from "next/og";
+import { site } from "@/config/site";
 
-export const runtime = 'edge';
-export const alt = 'Ahtesham Salamat Ansari — AI Engineer';
+export const alt = `${site.name}, ${site.positioning}`;
 export const size = { width: 1200, height: 630 };
-export const contentType = 'image/png';
+export const contentType = "image/png";
 
-/**
- * The card every LinkedIn, WhatsApp, Slack and X share renders. Generated at
- * build time from the same data as the site, so it can never drift.
- *
- * Widths are fixed rather than left to flex: satori will not wrap or shrink
- * the headline on its own, so the text column and the portrait each get an
- * explicit width that fits inside the 1056px of space within the padding.
- */
-export default function OpengraphImage() {
+const results = [
+  { value: "7,000", label: "prospects, AI outreach drafts" },
+  { value: "1.5M", label: "Q&A from a generative pipeline" },
+  { value: "78% → 94%", label: "dataset accuracy" },
+];
+
+// Latin subset of Google Sans (the site font), bundled so the build needs no network.
+const font = (weight: 400 | 700) => readFile(join(process.cwd(), "src/app/_fonts", `GoogleSans-${weight}.ttf`));
+
+export default async function Image() {
+  const [regular, bold] = await Promise.all([font(400), font(700)]);
   return new ImageResponse(
     (
       <div
         style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          background: '#0A0A0A',
-          padding: 72,
-          fontFamily: 'sans-serif',
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          background: "#ffffff",
+          padding: "64px 72px",
+          borderTop: "14px solid #14a800",
+          color: "#222222",
+          fontFamily: "Google Sans",
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            width: '100%',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', width: 810 }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 16,
-                color: '#6FCF97',
-                fontSize: 25,
-                letterSpacing: 6,
-                textTransform: 'uppercase',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  width: 13,
-                  height: 13,
-                  borderRadius: '50%',
-                  background: '#6FCF97',
-                }}
-              />
-              {CONTACT.role}
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                color: '#EEEEEE',
-                fontSize: 68,
-                fontWeight: 800,
-                letterSpacing: -2.5,
-                marginTop: 26,
-                lineHeight: 1.05,
-              }}
-            >
-              {CONTACT.name}
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                color: '#2FA084',
-                fontSize: 34,
-                fontWeight: 600,
-                marginTop: 16,
-                letterSpacing: -0.5,
-              }}
-            >
-              Production GenAI, RAG systems &amp; data at scale.
-            </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ fontSize: 30, color: "#0b6b00", fontWeight: 700 }}>{site.name}</div>
+          <div style={{ fontSize: 66, fontWeight: 700, lineHeight: 1.08, marginTop: 22, maxWidth: 940, letterSpacing: -1.5 }}>
+            Building AI systems that solve real business problems
           </div>
-
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={PROFILE_DATA_URI}
-            alt=""
-            width={196}
-            height={196}
-            style={{
-              width: 196,
-              height: 196,
-              flexShrink: 0,
-              borderRadius: '50%',
-              border: '4px solid #1F6F5F',
-              objectFit: 'cover',
-            }}
-          />
+          <div style={{ fontSize: 28, color: "#5e6d55", marginTop: 22 }}>
+            LLM Applications · RAG · AI Agents · Python Automation
+          </div>
         </div>
-
-        {/* metrics rail */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div
-            style={{
-              display: 'flex',
-              width: '100%',
-              height: 2,
-              background: '#1F6F5F',
-              marginBottom: 30,
-            }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {METRICS.map((m) => (
-              <div
-                key={m.label}
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    color: '#6FCF97',
-                    fontSize: 46,
-                    fontWeight: 700,
-                  }}
-                >
-                  {m.value}
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    color: '#8A9A95',
-                    fontSize: 21,
-                    marginTop: 6,
-                  }}
-                >
-                  {m.label}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div style={{ display: "flex", gap: 20 }}>
+          {results.map((r) => (
+            <div
+              key={r.value}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                border: "2px solid #e4e7e1",
+                borderRadius: 16,
+                padding: "18px 24px",
+                background: "#f7f8f6",
+              }}
+            >
+              <div style={{ fontSize: 36, fontWeight: 700, color: "#0b6b00" }}>{r.value}</div>
+              <div style={{ fontSize: 20, color: "#5e6d55", marginTop: 4 }}>{r.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     ),
-    size
+    {
+      ...size,
+      fonts: [
+        { name: "Google Sans", data: regular, weight: 400, style: "normal" },
+        { name: "Google Sans", data: bold, weight: 700, style: "normal" },
+      ],
+    },
   );
 }

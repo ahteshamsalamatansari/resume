@@ -1,41 +1,30 @@
-import { ImageResponse } from 'next/og';
+import { ImageResponse } from "next/og";
 
-export const runtime = 'edge';
 export const size = { width: 180, height: 180 };
-export const contentType = 'image/png';
+export const contentType = "image/png";
 
+// PNG twin of icon.svg for iOS home screens, which ignore SVG icons.
 export default function AppleIcon() {
   return new ImageResponse(
     (
       <div
         style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#0A0A0A',
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#108a00",
+          color: "#ffffff",
+          fontSize: 112,
+          fontWeight: 700,
+          fontStyle: "italic",
+          fontFamily: "serif",
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 124,
-            height: 124,
-            borderRadius: '50%',
-            border: '9px solid #1F6F5F',
-            color: '#6FCF97',
-            fontSize: 80,
-            fontWeight: 800,
-            letterSpacing: -4,
-          }}
-        >
-          A
-        </div>
+        A
       </div>
     ),
-    size
+    size,
   );
 }

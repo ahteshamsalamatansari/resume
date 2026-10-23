@@ -1,19 +1,18 @@
-import type { MetadataRoute } from 'next';
-import { SITE_NAME } from '@/lib/site';
+import type { MetadataRoute } from "next";
+import { site } from "@/config/site";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${SITE_NAME} — AI Engineer`,
-    short_name: 'Ahtesham.ai',
-    description:
-      'AI Engineer building production GenAI, RAG systems and data intelligence at scale.',
-    start_url: '/',
-    display: 'standalone',
-    background_color: '#0A0A0A',
-    theme_color: '#0A0A0A',
+    name: site.name,
+    short_name: site.shortName,
+    description: site.description,
+    start_url: "/",
+    display: "browser",
+    background_color: "#ffffff",
+    theme_color: "#108a00",
     icons: [
-      { src: '/icon', sizes: '512x512', type: 'image/png' },
-      { src: '/apple-icon', sizes: '180x180', type: 'image/png' },
+      { src: "/icon.svg", type: "image/svg+xml", sizes: "any" },
+      { src: "/apple-icon", type: "image/png", sizes: "180x180" },
     ],
   };
 }
