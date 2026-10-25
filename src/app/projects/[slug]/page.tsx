@@ -11,6 +11,7 @@ import { ProjectMockup } from "@/components/project-mockups";
 import { ResultList } from "@/components/sections";
 import { Container, Tag } from "@/components/ui";
 import { getProject, projects } from "@/content/profile";
+import { servicesForProject } from "@/content/services";
 import { buildCaseStudyJsonLd } from "@/lib/schema";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -153,7 +154,7 @@ export default async function CaseStudyPage({ params }: Props) {
             >
               {full && (
                 <nav aria-label="On this page" className="mb-6 hidden rounded-2xl border border-line bg-white p-6 lg:block">
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/60">On this page</h2>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">On this page</h2>
                   <ol className="mt-3 space-y-1.5 text-[15px]">
                     {full.toc.map((t) => (
                       <li key={t.id}>
@@ -167,11 +168,11 @@ export default async function CaseStudyPage({ params }: Props) {
               )}
               <div className="space-y-6 rounded-2xl border border-line bg-white p-6">
                 <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/60">Role</h2>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">Role</h2>
                   <p className="mt-1.5 text-[15px] text-ink">{project.context}</p>
                 </div>
                 <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/60">Tools</h2>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">Tools</h2>
                   <ul className="mt-2 flex flex-wrap gap-1.5">
                     {project.stack.map((t) => (
                       <Tag key={t}>{t}</Tag>
@@ -179,12 +180,15 @@ export default async function CaseStudyPage({ params }: Props) {
                   </ul>
                 </div>
                 <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/60">Related services</h2>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">Related services</h2>
                   <ul className="mt-2 space-y-1.5">
-                    {project.services.map((s) => (
-                      <li key={s}>
-                        <Link href="/#services" className="text-[15px] text-brand-ink underline-offset-4 hover:underline">
-                          {s}
+                    {servicesForProject(project.slug).map((s) => (
+                      <li key={s.slug}>
+                        <Link
+                          href={`/services/${s.slug}`}
+                          className="text-[15px] text-brand-ink underline-offset-4 hover:underline"
+                        >
+                          {s.shortName.charAt(0).toUpperCase() + s.shortName.slice(1)}
                         </Link>
                       </li>
                     ))}

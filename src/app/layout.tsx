@@ -16,7 +16,8 @@ const body = Google_Sans({
 const signature = Dancing_Script({
   variable: "--font-signature",
   subsets: ["latin"],
-  weight: ["600", "700"],
+  // Only the semibold signature is used; one weight keeps the font payload small.
+  weight: ["600"],
   display: "swap",
 });
 

@@ -1,6 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Award, Bot, Briefcase, FileSearch, GraduationCap, MessagesSquare, Workflow } from "lucide-react";
-import { UPWORK_PROFILE_URL } from "@/config/site";
+import { PHOTO, UPWORK_PROFILE_URL } from "@/config/site";
 import {
   agentBuilds,
   career,
@@ -12,7 +13,10 @@ import {
   skillGroups,
   type Project,
 } from "@/content/profile";
+import { homeFaqs, servicePages } from "@/content/services";
+import { FaqList } from "./faq-list";
 import { ProjectMockup } from "./project-mockups";
+import { ServiceGrid } from "./service-grid";
 import { Container, Eyebrow, SecondaryButton, SectionHeading, Signature, Tag, UpworkButton } from "./ui";
 
 const highlights = [
@@ -73,6 +77,20 @@ export function Overview() {
     <section id="overview" aria-labelledby="overview-title" className="border-y border-line bg-surface py-20 sm:py-24">
       <Container className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
         <div>
+          <figure className="mb-8 flex items-center gap-4">
+            <Image
+              src={PHOTO.src}
+              width={PHOTO.width}
+              height={PHOTO.height}
+              alt="Ahtesham Salamat Ansari, AI Engineer"
+              sizes="96px"
+              className="size-24 rounded-full border-4 border-white object-cover shadow-[0_4px_16px_-6px_rgba(34,34,34,0.25)]"
+            />
+            <figcaption>
+              <p className="font-semibold text-ink">Ahtesham Salamat Ansari</p>
+              <p className="text-sm text-muted">AI Engineer · BizProspex</p>
+            </figcaption>
+          </figure>
           <SectionHeading
             id="overview-title"
             eyebrow="Overview"
@@ -186,6 +204,39 @@ export function Services() {
             );
           })}
         </div>
+
+        <div className="mt-16 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h3 className="text-2xl font-bold tracking-tight text-ink">Services you can order</h3>
+            <p className="mt-2 max-w-[60ch] text-muted">
+              Fixed-price offers from my Upwork Project Catalog, and custom-scoped work for larger builds.
+            </p>
+          </div>
+          <Link
+            href="/services"
+            className="inline-flex items-center gap-1.5 font-semibold text-brand-ink underline-offset-4 hover:underline"
+          >
+            All services and pricing
+            <ArrowRight aria-hidden className="size-4" />
+          </Link>
+        </div>
+        <ServiceGrid items={servicePages} />
+      </Container>
+    </section>
+  );
+}
+
+export function Faq() {
+  return (
+    <section id="faq" aria-labelledby="faq-title" className="border-t border-line bg-surface py-20 sm:py-28">
+      <Container className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
+        <SectionHeading
+          id="faq-title"
+          eyebrow="FAQ"
+          title="Questions clients ask"
+          intro="How I work, how to hire me, and how AI output is kept accurate."
+        />
+        <FaqList faqs={homeFaqs} />
       </Container>
     </section>
   );
@@ -230,10 +281,10 @@ function FeaturedProject({ project, index }: { project: Project; index: number }
           {project.title}
         </h3>
 
-        <h4 className="mt-6 text-xs font-semibold uppercase tracking-wider text-ink/60">Problem</h4>
+        <h4 className="mt-6 text-xs font-semibold uppercase tracking-wider text-ink/70">Problem</h4>
         <p className="mt-1.5 leading-relaxed text-ink/85">{project.problem}</p>
 
-        <h4 className="mt-5 text-xs font-semibold uppercase tracking-wider text-ink/60">Approach</h4>
+        <h4 className="mt-5 text-xs font-semibold uppercase tracking-wider text-ink/70">Approach</h4>
         <ul className="mt-1.5 space-y-1.5">
           {project.approach.map((a) => (
             <li key={a} className="flex gap-2.5 leading-relaxed text-ink/85">
@@ -444,12 +495,38 @@ export function FinalCta() {
 export function SiteFooter() {
   return (
     <footer className="border-t border-line">
-      <Container className="flex flex-col gap-4 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <Signature className="text-2xl text-ink" />
-          <p className="mt-1.5">AI Engineer · LLM Applications, RAG, AI Agents & Python Automation</p>
+      <Container className="py-12 text-sm text-muted">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+          <div>
+            <Signature className="text-2xl text-ink" />
+            <p className="mt-1.5">AI Engineer · LLM Applications, RAG, AI Agents & Python Automation</p>
+          </div>
+          <nav aria-label="Services">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">Services</h2>
+            <ul className="mt-3 space-y-2">
+              {servicePages.map((s) => (
+                <li key={s.slug}>
+                  <Link href={`/services/${s.slug}`} className="underline-offset-4 hover:text-brand-ink hover:underline">
+                    {s.shortName.charAt(0).toUpperCase() + s.shortName.slice(1)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <nav aria-label="Case studies">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">Case studies</h2>
+            <ul className="mt-3 space-y-2">
+              {projects.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/projects/${p.slug}`} className="underline-offset-4 hover:text-brand-ink hover:underline">
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
-        <p className="max-w-[46ch] text-xs leading-relaxed sm:text-right">
+        <p className="mt-10 border-t border-line pt-6 text-xs leading-relaxed">
           Project visuals are illustrative mockups, not screenshots of employer or client systems.
         </p>
       </Container>

@@ -8,11 +8,13 @@ How search and social discovery work on this site, what is implemented, and what
 
 ## 1. Positioning and keywords
 
-The home page targets the person-name query and the main service queries, which match the Upwork profile positioning. Each case study page targets the longer, more specific queries for its own project (for example "n8n Airtable OpenAI outreach automation" or "SQL data validation deduplication").
+The home page targets the person-name query and the main service queries, which match the Upwork profile positioning. Each service page targets one buyer query (for example "RAG chatbot development" or "AI automation audit"). Each case study page targets the longer, more specific queries for its own project (for example "n8n Airtable OpenAI outreach automation" or "SQL data validation deduplication").
 
 | Page | URL | Purpose |
 | --- | --- | --- |
 | Home | `/` | Name, role, services, highlights |
+| Services index | `/services` | Hub that links every service, fixed-price first |
+| Service (×6) | `/services/[slug]` | One service: when it fits, deliverables, process, packages or pricing, related case studies, FAQ |
 | Case studies index | `/projects` | Hub that links every case study |
 | Case study (×6) | `/projects/[slug]` | One project: problem, approach, outcome, tools, results |
 | Long-form case study | `/projects/ai-outreach-automation-platform` | Full engineering write-up with a table of contents, diagrams and tables (`src/components/case-studies/outreach-platform.tsx`) |
@@ -23,6 +25,9 @@ The home page targets the person-name query and the main service queries, which 
 | Role | AI Engineer | `<title>`, hero eyebrow, `jobTitle` |
 | Services | LLM application development, RAG / Retrieval-Augmented Generation, AI agents, MCP, Python automation, data pipelines | Title, description, Services `h3`s, Skills |
 | Proof | n8n, Airtable, OpenAI, Claude, LangChain, Airflow, Playwright, Selenium | Project stacks, Skills |
+| Buyer queries | AI automation audit, n8n AI outreach automation, Python web scraping and data cleaning, RAG chatbot development, AI agent / MCP server development, AI integration services | Service page `h1`, title, description, FAQ |
+
+Service selection: the first three services are the Upwork Project Catalog offers (prices copied 2026-10-25, `PRICES_AS_OF`). The other three come from Upwork's In-Demand Skills 2026 report, where AI integration grew 178% and AI chatbot development 71% year over year, and match skills already on the profile. They carry no prices because none are published.
 
 Rules: every keyword must map to content the page actually shows. Do not add terms to `keywords` or JSON-LD that the page does not support.
 
@@ -63,14 +68,19 @@ All social cards share `src/lib/og.tsx` and are prerendered at build time. Font 
 One JSON-LD `@graph` on the home page:
 
 - `WebSite`: name, description, publisher.
-- `ProfilePage`: `mainEntity` is the person; `hasPart` lists services and selected projects with their stated results.
-- `Person`: name, job title, employer (BizProspex), alma mater, `knowsAbout`, four certifications as `EducationalOccupationalCredential`, and `sameAs` pointing only to the Upwork profile.
+- `ProfilePage`: `mainEntity` is the person; `hasPart` lists capabilities, the orderable service pages, and selected projects with their stated results.
+- `FAQPage`: the six questions shown in the home FAQ section.
+- `Person`: name, photo (`public/ahtesham-salamat-ansari.jpg`), job title, employer (BizProspex), alma mater, `knowsAbout`, four certifications as `EducationalOccupationalCredential`, and `sameAs` pointing only to the Upwork profile.
+
+On `/services`: a `CollectionPage` whose `mainEntity` is an `OfferCatalog` of the six services, plus a `BreadcrumbList`.
+
+On each `/services/[slug]`: a `Service` (provider linked to the `Person`, Upwork as the `availableChannel`, and one `Offer` per catalog tier in USD for the three fixed-price services), a `FAQPage` matching the visible questions, and a `BreadcrumbList`.
 
 On `/projects`: a `CollectionPage` with an `ItemList` of every case study, plus a `BreadcrumbList`.
 
 On each `/projects/[slug]`: an `Article` (headline, description, image, author linked to the home-page `Person` by `@id`, tools as keywords) plus a `BreadcrumbList` (Home › Case studies › title).
 
-Every graph is generated from `src/content/profile.ts`, the same data the pages render, so it cannot drift from the visible content.
+Every graph is generated from `src/content/profile.ts` and `src/content/services.ts`, the same data the pages render, so it cannot drift from the visible content.
 
 ### Case study metadata (`src/app/projects/[slug]/page.tsx`)
 
@@ -150,6 +160,8 @@ Both files were copied from the previous site so existing ownership stays valid.
 
 - **Content changes:** edit `src/content/profile.ts`, then update `LAST_UPDATED` in `src/config/site.ts` so the sitemap `lastmod` and article dates change.
 - **New case study:** add an entry to `projects` with a unique `slug`, a one-sentence `summary` (it becomes the meta description), `outcome`, `services` (titles from `services`) and verified `results`. The page, social card, sitemap entry, index row, JSON-LD and `llms.txt` line are all generated from it. Then request indexing for the new URL in Search Console.
+- **New service:** add an entry to `servicePages` in `src/content/services.ts`. Add `packages` only when the service is a published Upwork catalog offer, and update `PRICES_AS_OF` when prices are copied. `proof` links it to case studies, and the case studies link back automatically.
+- **Price change on Upwork:** update the tier in `services.ts` and `PRICES_AS_OF` together.
 - **Never rename a slug** without adding a redirect from the old URL in `next.config.ts`.
 - **Custom domain:** add it in Vercel, then set `NEXT_PUBLIC_SITE_URL` for Production (or change the default in `src/config/site.ts`). Canonical, sitemap, robots, Open Graph and JSON-LD all follow. Add the new domain as a property in Search Console and Bing, and keep the `vercel.app` domain redirecting to it.
 - **Social image:** edit `src/app/opengraph-image.tsx`. The bundled fonts are a Latin subset with layout tables removed (the OG renderer cannot parse them). Characters outside basic Latin plus `→ · – ’` will not render; regenerate the subset if you need more.
@@ -159,9 +171,10 @@ Both files were copied from the previous site so existing ownership stays valid.
 These are left out on purpose, not by oversight:
 
 - **No social or contact links**, and `sameAs` lists only the Upwork profile. The site directs all hiring to Upwork.
-- **No FAQ schema.** Google shows FAQ rich results only for authoritative government and health sites, so it would add markup with no benefit.
+- **FAQ schema without rich results.** Since 2023 Google shows FAQ rich results only for authoritative government and health sites, so the FAQ markup will not create expandable results in Google. It is kept because the questions are visible on the page, Bing and AI answer engines read it, and it costs nothing.
 - **No `keywords`-only terms.** The `keywords` meta tag is ignored by Google and kept only as documentation of targeting.
-- **No unverified metrics** in titles, descriptions or structured data. Only figures stated in the Upwork profile appear.
+- **No unverified metrics** in titles, descriptions or structured data. Only figures stated in the Upwork profile, the Upwork catalog or Ahtesham's own case-study write-ups appear.
+- **No `aggregateRating` or reviews** on services. There are no published reviews to mark up, and self-serving review markup is against Google's guidelines.
 
 ## 8. Known limits
 

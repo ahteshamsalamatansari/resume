@@ -80,7 +80,7 @@ function Table({ caption, head, rows }: { caption: string; head: string[]; rows:
         <thead>
           <tr className="border-b border-line bg-surface">
             {head.map((h, i) => (
-              <th key={i} scope="col" className="px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-ink/60">
+              <th key={i} scope="col" className="px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-ink/70">
                 {h}
               </th>
             ))}
@@ -126,7 +126,7 @@ function Problem({ n, title, rows }: { n: number; title: string; rows: { label: 
       <dl className="mt-4 space-y-3">
         {rows.map((r) => (
           <div key={r.label}>
-            <dt className="text-xs font-semibold uppercase tracking-wider text-ink/60">{r.label}</dt>
+            <dt className="text-xs font-semibold uppercase tracking-wider text-ink/70">{r.label}</dt>
             <dd className="mt-1 leading-relaxed text-ink/85">{r.body}</dd>
           </div>
         ))}
@@ -152,7 +152,7 @@ function ArchitectureDiagram() {
   return (
     <figure>
       <div className="rounded-2xl border border-line bg-white p-4 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-ink/60">Per campaign · built 3 times</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-ink/70">Per campaign · built 3 times</p>
         <ol className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {stages.map((s, i) => (
             <li
@@ -173,7 +173,7 @@ function ArchitectureDiagram() {
           Follow-ups re-enter at step 5, so every email in a sequence is reviewed like the first.
         </p>
         <div className="mt-4 rounded-lg border border-dashed border-ink/25 bg-surface p-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-ink/60">Shared by all 3 campaigns</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-ink/70">Shared by all 3 campaigns</p>
           <ul className="mt-2 flex flex-wrap gap-1.5 text-[13px]">
             {["20-mailbox sending pool", "Append-only send ledger", "Bounce circuit breakers", "Operator control panel"].map(
               (t) => (

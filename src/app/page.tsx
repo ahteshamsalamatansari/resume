@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/components/site-header";
 import { JsonLd } from "@/components/json-ld";
 import { buildJsonLd } from "@/lib/schema";
-import { Approach, FinalCta, Hero, Overview, Projects, Services, SiteFooter, Skills } from "@/components/sections";
+import { Approach, Faq, FinalCta, Hero, Overview, Projects, Services, SiteFooter, Skills } from "@/components/sections";
 
 export default function Home() {
   return (
@@ -22,6 +22,7 @@ export default function Home() {
         <Projects />
         <Skills />
         <Approach />
+        <Faq />
         <FinalCta />
       </main>
       <SiteFooter />

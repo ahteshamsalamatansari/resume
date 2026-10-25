@@ -1,5 +1,6 @@
 import { SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
 import { career, certifications, projects, services, skillGroups } from "@/content/profile";
+import { homeFaqs, servicePages } from "@/content/services";
 
 /**
  * /llms.txt: a plain-text summary for AI assistants and answer engines,
@@ -20,6 +21,16 @@ export function GET() {
     "## Services",
     ...services.map((s) => `- ${s.title}: ${s.problem}`),
     "",
+    `## Services you can order on Upwork (${SITE_URL}/services)`,
+    ...servicePages.map(
+      (s) =>
+        `- [${s.name}](${SITE_URL}/services/${s.slug}): ${s.metaDescription} ${
+          s.packages
+            ? `Packages: ${s.packages.map((p) => `${p.name} ${p.price}, ${p.delivery}: ${p.includes}`).join("; ")}.`
+            : "Scoped per project."
+        }`,
+    ),
+    "",
     `## Case studies (${SITE_URL}/projects)`,
     ...projects.map(
       (p) =>
@@ -34,6 +45,8 @@ export function GET() {
     "## Certifications",
     ...certifications.map((c) => `- ${c.name} (${c.issuer}, ${c.year})`),
     "",
+    "## FAQ",
+    ...homeFaqs.flatMap((f) => [`Q: ${f.q}`, `A: ${f.a}`, ""]),
   ];
 
   return new Response(lines.join("\n"), {

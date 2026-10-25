@@ -17,6 +17,9 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://ahteshamsalamatansari.vercel.app"
 ).replace(/\/$/, "");
 
+/** Profile photo: shown in the overview and used as the Person image in JSON-LD. */
+export const PHOTO = { src: "/ahtesham-salamat-ansari.jpg", width: 480, height: 480 } as const;
+
 /** Bump when page content changes; feeds sitemap lastmod. */
 export const LAST_UPDATED = "2026-10-25";
 
