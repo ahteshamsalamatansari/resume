@@ -17,7 +17,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     title: service.shortName.charAt(0).toUpperCase() + service.shortName.slice(1),
     subtitle: service.stack.slice(0, 6).join(" · "),
     results: service.packages
-      ? service.packages.map((p) => ({ value: p.price, label: `${p.name} · ${p.delivery}` }))
+      ? service.packages.map((p) => ({ value: p.delivery, label: `${p.name} package` }))
       : [{ value: "Custom scope", label: "quoted on Upwork" }],
   });
 }

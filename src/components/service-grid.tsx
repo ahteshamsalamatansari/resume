@@ -13,7 +13,7 @@ export function ServiceGrid({ items }: { items: ServicePage[] }) {
             className="group flex h-full flex-col rounded-2xl border border-line bg-white p-6 transition-shadow hover:shadow-[0_8px_24px_-14px_rgba(34,34,34,0.18)]"
           >
             <span className="text-xs font-medium text-muted">
-              {s.packages ? `From ${s.packages[0].price} · fixed price` : "Custom scope"}
+              {s.packages ? `${s.packages.length} packages on Upwork` : "Custom scope"}
             </span>
             <span className="mt-1.5 text-lg font-bold tracking-tight text-ink group-hover:text-brand-ink">{s.shortName}</span>
             <span className="mt-2 text-[15px] leading-relaxed text-muted">{s.metaDescription}</span>

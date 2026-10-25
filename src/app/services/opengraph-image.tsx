@@ -11,8 +11,10 @@ export default function Image() {
     eyebrow: site.name,
     title: "AI engineering services: automation, RAG chatbots, AI agents",
     subtitle: `${servicePages.length} services, ordered on Upwork`,
-    results: servicePages
-      .filter((s) => s.packages)
-      .map((s) => ({ value: `From ${s.packages![0].price}`, label: s.shortName })),
+    results: [
+      { value: "AI automation", label: "audits and n8n workflows" },
+      { value: "RAG and agents", label: "chatbots, MCP, LLM integration" },
+      { value: "Web data", label: "scraping and cleaning" },
+    ],
   });
 }

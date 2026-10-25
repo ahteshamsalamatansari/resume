@@ -209,14 +209,14 @@ export function Services() {
           <div>
             <h3 className="text-2xl font-bold tracking-tight text-ink">Services you can order</h3>
             <p className="mt-2 max-w-[60ch] text-muted">
-              Fixed-price offers from my Upwork Project Catalog, and custom-scoped work for larger builds.
+              Packaged offers from my Upwork Project Catalog, and custom-scoped work for larger builds.
             </p>
           </div>
           <Link
             href="/services"
             className="inline-flex items-center gap-1.5 font-semibold text-brand-ink underline-offset-4 hover:underline"
           >
-            All services and pricing
+            All services
             <ArrowRight aria-hidden className="size-4" />
           </Link>
         </div>

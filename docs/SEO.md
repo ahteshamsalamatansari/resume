@@ -13,7 +13,7 @@ The home page targets the person-name query and the main service queries, which 
 | Page | URL | Purpose |
 | --- | --- | --- |
 | Home | `/` | Name, role, services, highlights |
-| Services index | `/services` | Hub that links every service, fixed-price first |
+| Services index | `/services` | Hub that links every service, packaged first |
 | Service (×6) | `/services/[slug]` | One service: when it fits, deliverables, process, packages or pricing, related case studies, FAQ |
 | Case studies index | `/projects` | Hub that links every case study |
 | Case study (×6) | `/projects/[slug]` | One project: problem, approach, outcome, tools, results |
@@ -27,7 +27,7 @@ The home page targets the person-name query and the main service queries, which 
 | Proof | n8n, Airtable, OpenAI, Claude, LangChain, Airflow, Playwright, Selenium | Project stacks, Skills |
 | Buyer queries | AI automation audit, n8n AI outreach automation, Python web scraping and data cleaning, RAG chatbot development, AI agent / MCP server development, AI integration services | Service page `h1`, title, description, FAQ |
 
-Service selection: the first three services are the Upwork Project Catalog offers (prices copied 2026-10-25, `PRICES_AS_OF`). The other three come from Upwork's In-Demand Skills 2026 report, where AI integration grew 178% and AI chatbot development 71% year over year, and match skills already on the profile. They carry no prices because none are published.
+Service selection: the first three services are the Upwork Project Catalog offers, shown with their tiers and delivery times. The other three come from Upwork's In-Demand Skills 2026 report, where AI integration grew 178% and AI chatbot development 71% year over year, and match skills already on the profile. No prices appear anywhere on the site, by request; Upwork shows them.
 
 Rules: every keyword must map to content the page actually shows. Do not add terms to `keywords` or JSON-LD that the page does not support.
 
@@ -74,7 +74,7 @@ One JSON-LD `@graph` on the home page:
 
 On `/services`: a `CollectionPage` whose `mainEntity` is an `OfferCatalog` of the six services, plus a `BreadcrumbList`.
 
-On each `/services/[slug]`: a `Service` (provider linked to the `Person`, Upwork as the `availableChannel`, and one `Offer` per catalog tier in USD for the three fixed-price services), a `FAQPage` matching the visible questions, and a `BreadcrumbList`.
+On each `/services/[slug]`: a `Service` (provider linked to the `Person`, Upwork as the `availableChannel`, no `Offer` markup because prices are not shown), a `FAQPage` matching the visible questions, and a `BreadcrumbList`.
 
 On `/projects`: a `CollectionPage` with an `ItemList` of every case study, plus a `BreadcrumbList`.
 
@@ -160,8 +160,7 @@ Both files were copied from the previous site so existing ownership stays valid.
 
 - **Content changes:** edit `src/content/profile.ts`, then update `LAST_UPDATED` in `src/config/site.ts` so the sitemap `lastmod` and article dates change.
 - **New case study:** add an entry to `projects` with a unique `slug`, a one-sentence `summary` (it becomes the meta description), `outcome`, `services` (titles from `services`) and verified `results`. The page, social card, sitemap entry, index row, JSON-LD and `llms.txt` line are all generated from it. Then request indexing for the new URL in Search Console.
-- **New service:** add an entry to `servicePages` in `src/content/services.ts`. Add `packages` only when the service is a published Upwork catalog offer, and update `PRICES_AS_OF` when prices are copied. `proof` links it to case studies, and the case studies link back automatically.
-- **Price change on Upwork:** update the tier in `services.ts` and `PRICES_AS_OF` together.
+- **New service:** add an entry to `servicePages` in `src/content/services.ts`. Add `packages` only when the service is a published Upwork catalog offer. Do not add prices. `proof` links it to case studies, and the case studies link back automatically.
 - **Never rename a slug** without adding a redirect from the old URL in `next.config.ts`.
 - **Custom domain:** add it in Vercel, then set `NEXT_PUBLIC_SITE_URL` for Production (or change the default in `src/config/site.ts`). Canonical, sitemap, robots, Open Graph and JSON-LD all follow. Add the new domain as a property in Search Console and Bing, and keep the `vercel.app` domain redirecting to it.
 - **Social image:** edit `src/app/opengraph-image.tsx`. The bundled fonts are a Latin subset with layout tables removed (the OG renderer cannot parse them). Characters outside basic Latin plus `→ · – ’` will not render; regenerate the subset if you need more.

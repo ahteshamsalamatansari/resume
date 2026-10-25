@@ -1,6 +1,6 @@
 import { LAST_UPDATED, PHOTO, SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
 import { career, certifications, education, projects, services, skillGroups, type Project } from "@/content/profile";
-import { PRICES_AS_OF, homeFaqs, servicePages, type Faq, type ServicePage } from "@/content/services";
+import { homeFaqs, servicePages, type Faq, type ServicePage } from "@/content/services";
 
 /**
  * JSON-LD graph for the home page: WebSite, ProfilePage and Person.
@@ -223,19 +223,9 @@ export function buildServicesIndexJsonLd() {
   };
 }
 
-/** /services/[slug]: one service, its catalog tiers as offers, and its FAQ. */
+/** /services/[slug]: one service and its FAQ. Prices are not shown on the site, so no Offer markup. */
 export function buildServiceJsonLd(s: ServicePage) {
   const url = serviceUrl(s);
-  // Upwork is where the service is ordered, so offers point there.
-  const offers = s.packages?.map((p) => ({
-    "@type": "Offer",
-    name: `${p.name}: ${p.includes}`,
-    price: p.price.replace(/[^0-9.]/g, ""),
-    priceCurrency: "USD",
-    url: UPWORK_PROFILE_URL,
-    availability: "https://schema.org/InStock",
-    validFrom: PRICES_AS_OF,
-  }));
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -250,7 +240,6 @@ export function buildServiceJsonLd(s: ServicePage) {
         areaServed: "Worldwide",
         availableChannel: { "@type": "ServiceChannel", serviceUrl: UPWORK_PROFILE_URL, name: "Upwork" },
         keywords: s.keywords.join(", "),
-        ...(offers ? { offers } : {}),
       },
       faqPage(s.faqs, url),
       breadcrumbs([

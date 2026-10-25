@@ -26,7 +26,7 @@ export function GET() {
       (s) =>
         `- [${s.name}](${SITE_URL}/services/${s.slug}): ${s.metaDescription} ${
           s.packages
-            ? `Packages: ${s.packages.map((p) => `${p.name} ${p.price}, ${p.delivery}: ${p.includes}`).join("; ")}.`
+            ? `Packages: ${s.packages.map((p) => `${p.name} (${p.delivery}): ${p.includes}`).join("; ")}.`
             : "Scoped per project."
         }`,
     ),

@@ -9,7 +9,7 @@ import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { Container, Eyebrow, SecondaryButton, Tag, UpworkButton } from "@/components/ui";
 import { getProject } from "@/content/profile";
-import { PRICES_AS_OF, getServicePage, servicePages } from "@/content/services";
+import { getServicePage, servicePages } from "@/content/services";
 import { buildServiceJsonLd } from "@/lib/schema";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -31,13 +31,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: { card: "summary_large_image", title: service.metaTitle, description: service.metaDescription },
   };
 }
-
-const pricesDate = new Date(`${PRICES_AS_OF}T00:00:00Z`).toLocaleDateString("en-GB", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-});
 
 function Block({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
@@ -70,7 +63,7 @@ export default async function ServicePage({ params }: Props) {
             ]}
           />
           <div className="mt-10">
-            <Eyebrow>{service.packages ? "Fixed-price service on Upwork" : "Custom-scoped service on Upwork"}</Eyebrow>
+            <Eyebrow>{service.packages ? "Packaged service on Upwork" : "Custom-scoped service on Upwork"}</Eyebrow>
           </div>
           <h1 className="mt-4 max-w-[24ch] text-4xl font-bold leading-[1.08] tracking-tight text-ink sm:text-5xl">
             {service.name}
@@ -129,7 +122,7 @@ export default async function ServicePage({ params }: Props) {
             </Block>
 
             {service.packages ? (
-              <Block id="packages-title" title="Packages and pricing">
+              <Block id="packages-title" title="Packages">
                 {service.catalogTitle && (
                   <p className="mb-5 text-muted">
                     Listed in my Upwork Project Catalog as &ldquo;{service.catalogTitle}&rdquo;.
@@ -142,20 +135,19 @@ export default async function ServicePage({ params }: Props) {
                       className={`flex flex-col rounded-2xl border bg-white p-5 ${i === 1 ? "border-brand" : "border-line"}`}
                     >
                       <h3 className="text-sm font-semibold uppercase tracking-wider text-ink/70">{p.name}</h3>
-                      <p className="mt-2 text-3xl font-bold tracking-tight text-ink">{p.price}</p>
-                      <p className="text-sm text-muted">Delivered in {p.delivery}</p>
+                      <p className="mt-2 text-2xl font-bold tracking-tight text-ink">{p.delivery}</p>
+                      <p className="text-sm text-muted">delivery</p>
                       <p className="mt-4 flex-1 leading-snug text-ink/85">{p.includes}</p>
                     </li>
                   ))}
                 </ul>
                 <p className="mt-4 text-sm leading-relaxed text-muted">
-                  Prices as listed on Upwork on {pricesDate}. Upwork shows the current price and handles the order and
-                  payment.
+                  See current pricing and order on Upwork, which also handles payment.
                 </p>
                 <UpworkButton className="mt-5">Order on Upwork</UpworkButton>
               </Block>
             ) : (
-              <Block id="pricing-title" title="Pricing">
+              <Block id="pricing-title" title="Scope and quote">
                 <p className="text-[17px] leading-relaxed text-ink/85">
                   This service is scoped per project, because cost depends on your data, the tools involved and where it
                   needs to run. Send the details through Upwork and I will reply with a scope and a fixed quote there.
@@ -197,9 +189,9 @@ export default async function ServicePage({ params }: Props) {
           <aside aria-label="Service details" className="lg:sticky lg:top-24 lg:self-start">
             <div className="space-y-6 rounded-2xl border border-line bg-white p-6">
               <div>
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">Price</h2>
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">How to order</h2>
                 <p className="mt-1.5 text-[15px] text-ink">
-                  {service.packages ? `From ${service.packages[0].price} on Upwork` : "Scoped per project on Upwork"}
+                  {service.packages ? `${service.packages.length} packages on Upwork` : "Scoped per project on Upwork"}
                 </p>
               </div>
               <div>

@@ -1,15 +1,16 @@
 /**
  * Service pages (/services/[slug]).
  *
- * The first three are Ahtesham's Upwork Project Catalog offers; titles, scope,
- * tiers and prices are copied from the catalog text he supplied on 2026-10-25.
- * The other three are scoped per project on Upwork and carry no prices.
+ * The first three are Ahtesham's Upwork Project Catalog offers; titles, scope
+ * and tiers are copied from the catalog text he supplied on 2026-10-25.
+ * The other three are scoped per project on Upwork. Prices are deliberately
+ * not shown anywhere on the site (his request, 2026-10-25); Upwork shows them.
  * Those three were chosen from Upwork's In-Demand Skills 2026 report (AI
  * integration +178%, AI chatbot development +71%) and match skills already
  * on his profile. Do not add results, clients or prices that no source states.
  */
 
-export type Package = { name: string; price: string; delivery: string; includes: string };
+export type Package = { name: string; delivery: string; includes: string };
 export type Faq = { q: string; a: string };
 
 export type ServicePage = {
@@ -37,9 +38,6 @@ export type ServicePage = {
   proof: string[];
   faqs: Faq[];
 };
-
-/** Date the catalog prices were copied. Upwork always shows the current price. */
-export const PRICES_AS_OF = "2026-10-25";
 
 export const servicePages: ServicePage[] = [
   {
@@ -70,9 +68,9 @@ export const servicePages: ServicePage[] = [
       { title: "You get the written plan", body: "What to build, with which tools, in what order, with the expected time saved." },
     ],
     packages: [
-      { name: "Starter", price: "$100", delivery: "3 days", includes: "1 workflow reviewed, written action plan" },
-      { name: "Standard", price: "$200", delivery: "4 days", includes: "Up to 3 workflows, plan plus effort estimate for each" },
-      { name: "Advanced", price: "$350", delivery: "5 days", includes: "Up to 3 workflows, plan, estimates, and a 30-minute walkthrough call" },
+      { name: "Starter", delivery: "3 days", includes: "1 workflow reviewed, written action plan" },
+      { name: "Standard", delivery: "4 days", includes: "Up to 3 workflows, plan plus effort estimate for each" },
+      { name: "Advanced", delivery: "5 days", includes: "Up to 3 workflows, plan, estimates, and a 30-minute walkthrough call" },
     ],
     stack: ["n8n", "Python", "OpenAI", "Claude", "Airtable"],
     proof: ["ai-outreach-automation-platform", "automated-etl-workflows"],
@@ -120,9 +118,9 @@ export const servicePages: ServicePage[] = [
       { title: "Hand over", body: "Setup guide and handover so your team can run, review and adjust it." },
     ],
     packages: [
-      { name: "Starter", price: "$250", delivery: "5 days", includes: "Draft generation for one prospect list, review step" },
-      { name: "Standard", price: "$500", delivery: "8 days", includes: "Adds data enrichment and CRM sync" },
-      { name: "Advanced", price: "$900", delivery: "14 days", includes: "Adds a monitoring panel and VPS hosting setup" },
+      { name: "Starter", delivery: "5 days", includes: "Draft generation for one prospect list, review step" },
+      { name: "Standard", delivery: "8 days", includes: "Adds data enrichment and CRM sync" },
+      { name: "Advanced", delivery: "14 days", includes: "Adds a monitoring panel and VPS hosting setup" },
     ],
     stack: ["n8n", "Airtable", "OpenAI", "Claude", "VPS"],
     proof: ["ai-outreach-automation-platform"],
@@ -173,9 +171,9 @@ export const servicePages: ServicePage[] = [
       { title: "Deliver data and script", body: "The dataset in your chosen format, plus the script to run it again." },
     ],
     packages: [
-      { name: "Starter", price: "$150", delivery: "3 days", includes: "1 source, up to 5,000 records, cleaned CSV" },
-      { name: "Standard", price: "$350", delivery: "5 days", includes: "Up to 3 sources, validation and deduplication" },
-      { name: "Advanced", price: "$700", delivery: "8 days", includes: "Up to 5 sources, scheduled runs, delivery to Sheets or Airtable" },
+      { name: "Starter", delivery: "3 days", includes: "1 source, up to 5,000 records, cleaned CSV" },
+      { name: "Standard", delivery: "5 days", includes: "Up to 3 sources, validation and deduplication" },
+      { name: "Advanced", delivery: "8 days", includes: "Up to 5 sources, scheduled runs, delivery to Sheets or Airtable" },
     ],
     stack: ["Python", "Playwright", "Selenium", "BeautifulSoup", "Pandas", "SQL"],
     proof: ["b2b-data-validation-deduplication", "competitive-intelligence-research", "generative-mcq-pipeline", "automated-data-qa"],
@@ -233,8 +231,8 @@ export const servicePages: ServicePage[] = [
         a: "Text-based content such as PDFs, documents and knowledge-base articles. We confirm the formats and volume during scoping.",
       },
       {
-        q: "How is the price set?",
-        a: "RAG projects are scoped per project on Upwork, because cost depends on the content, the number of sources and where the assistant needs to run.",
+        q: "How is a RAG project scoped?",
+        a: "Per project on Upwork, because the work depends on the content, the number of sources and where the assistant needs to run.",
       },
     ],
   },
@@ -336,11 +334,11 @@ export const homeFaqs: Faq[] = [
   },
   {
     q: "How do I hire you?",
-    a: "Through Upwork. You can order a fixed-price service from my Upwork Project Catalog, or send me a project through my Upwork profile for anything that needs custom scope.",
+    a: "Through Upwork. You can order a packaged service from my Upwork Project Catalog, or send me a project through my Upwork profile for anything that needs custom scope.",
   },
   {
     q: "Can we start with a small project?",
-    a: "Yes. The AI automation audit starts at $100 and gives you a written plan for one workflow before you commit to a larger build.",
+    a: "Yes. The smallest AI automation audit package reviews one workflow and gives you a written plan in 3 days, before you commit to a larger build.",
   },
   {
     q: "How do you keep AI output accurate?",
