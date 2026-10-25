@@ -2,6 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navItems } from "@/config/site";
 import { Container, Signature, UpworkButton } from "./ui";
@@ -9,10 +10,14 @@ import { Container, Signature, UpworkButton } from "./ui";
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
+  const pathname = usePathname();
+  // Page links are active on their own pages; section links while their section is in view.
+  const isActive = (href: string) => (href.includes("#") ? active === href : pathname.startsWith(href));
 
   // Highlight the nav item for the section currently in view.
   useEffect(() => {
     const sections = navItems
+      .filter((item) => item.href.includes("#"))
       .map((item) => document.getElementById(item.href.split("#")[1]))
       .filter((el): el is HTMLElement => el !== null);
 
@@ -44,24 +49,26 @@ export function SiteHeader() {
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-1">
             {navItems.map((item) => {
-              const isActive = active === item.href;
+              const current = isActive(item.href);
+              // Section links stay plain anchors so the browser does the smooth scroll.
+              const NavLink = item.href.includes("#") ? "a" : Link;
               return (
                 <li key={item.href}>
-                  <a
+                  <NavLink
                     href={item.href}
-                    aria-current={isActive ? "true" : undefined}
+                    aria-current={current ? (item.href.includes("#") ? "true" : "page") : undefined}
                     className={`relative rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors ${
-                      isActive ? "text-brand-ink" : "text-ink/75 hover:text-ink"
+                      current ? "text-brand-ink" : "text-ink/75 hover:text-ink"
                     }`}
                   >
                     {item.label}
                     <span
                       aria-hidden
                       className={`absolute inset-x-3.5 -bottom-[13px] h-0.5 rounded-full bg-brand transition-opacity ${
-                        isActive ? "opacity-100" : "opacity-0"
+                        current ? "opacity-100" : "opacity-0"
                       }`}
                     />
-                  </a>
+                  </NavLink>
                 </li>
               );
             })}
@@ -88,17 +95,21 @@ export function SiteHeader() {
         <nav id="mobile-nav" aria-label="Mobile" className="absolute inset-x-0 top-full border-y border-line bg-white shadow-[0_12px_24px_-16px_rgba(34,34,34,0.25)] md:hidden">
           <Container className="py-4">
             <ul className="flex flex-col">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="block rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-surface"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
+              {navItems.map((item) => {
+                const NavLink = item.href.includes("#") ? "a" : Link;
+                return (
+                  <li key={item.href}>
+                    <NavLink
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={!item.href.includes("#") && isActive(item.href) ? "page" : undefined}
+                      className="block rounded-lg px-2 py-3 text-base font-medium text-ink hover:bg-surface"
+                    >
+                      {item.label}
+                    </NavLink>
+                  </li>
+                );
+              })}
             </ul>
             <UpworkButton className="mt-3 w-full" />
           </Container>
