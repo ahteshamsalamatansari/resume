@@ -18,7 +18,7 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 
 /** Bump when page content changes; feeds sitemap lastmod. */
-export const LAST_UPDATED = "2026-10-23";
+export const LAST_UPDATED = "2026-10-25";
 
 /**
  * Search-engine ownership. Both are verified with files in /public

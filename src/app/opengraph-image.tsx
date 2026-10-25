@@ -11,7 +11,7 @@ export default function Image() {
     title: "Building AI systems that solve real business problems",
     subtitle: "LLM Applications · RAG · AI Agents · Python Automation",
     results: [
-      { value: "7,000", label: "prospects, AI outreach drafts" },
+      { value: "10,691", label: "contacts, AI outreach platform" },
       { value: "1.5M", label: "Q&A from a generative pipeline" },
       { value: "78% → 94%", label: "dataset accuracy" },
     ],

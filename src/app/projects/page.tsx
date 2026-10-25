@@ -10,7 +10,7 @@ import { agentBuilds, projects } from "@/content/profile";
 import { buildProjectsIndexJsonLd } from "@/lib/schema";
 
 const description =
-  "Case studies in AI automation, LLM pipelines and data engineering: an n8n outreach system for 7,000 prospects, a 1.5M-question generation pipeline, and data quality work from 78% to 94% accuracy.";
+  "Case studies in AI automation, LLM pipelines and data engineering: an n8n outreach platform managing 10,691 contacts, a 1.5M-question generation pipeline, and data quality work from 78% to 94% accuracy.";
 
 export const metadata: Metadata = {
   title: "Case Studies: AI Automation, LLM Pipelines & Data Engineering",
@@ -30,8 +30,8 @@ export default function ProjectsPage() {
             Case studies
           </h1>
           <p className="mt-5 max-w-[62ch] text-lg leading-relaxed text-muted">
-            Engineering work from my roles at BizProspex, from AI outreach automation and LLM content pipelines to data
-            validation and ETL. Each one covers the problem, the approach, the tools and the measured result.
+            Engineering work from client projects and my roles at BizProspex, from AI outreach automation and LLM
+            content pipelines to data validation and ETL. Each one covers the problem, the approach, the tools and the measured result.
           </p>
 
           <ol className="mt-12 divide-y divide-line border-y border-line">

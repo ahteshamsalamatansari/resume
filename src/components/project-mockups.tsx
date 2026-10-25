@@ -1,4 +1,4 @@
-import { Check, ChevronRight, CircleAlert, Database, FileSearch, Globe, ShieldCheck, Sparkles } from "lucide-react";
+import { Check, ChevronRight, Clock, Database, FileSearch, Globe, ShieldCheck, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import type { Project } from "@/content/profile";
 
@@ -36,25 +36,25 @@ function Stat({ label, value, note }: { label: string; value: string; note?: str
 
 function OutreachMockup() {
   const steps = [
-    { name: "Load prospect record", tool: "Airtable via MCP", ok: true },
-    { name: "Research and personalize", tool: "n8n workflow", ok: true },
-    { name: "Draft email", tool: "LLM", ok: true },
-    { name: "Enrichment lookup", tool: "API request", ok: false },
+    { name: "Research organisation website", tool: "Crawler + OpenAI", ok: true },
+    { name: "Draft email", tool: "3 model calls", ok: true },
+    { name: "Check figures and offers", tool: "Code validators", ok: true },
+    { name: "Human approval", tool: "Review grid", ok: false },
   ];
   return (
-    <Frame title="Outreach workflow · control panel">
+    <Frame title="Outreach platform · control panel">
       <div className="grid grid-cols-2 gap-3">
-        <Stat label="Prospects" value="7,000" note="personalized drafts" />
-        <Stat label="Generic replies" value="35 min" note="per day, was 4 h" />
+        <Stat label="Contacts" value="10,691" note="3 campaigns" />
+        <Stat label="Daily ceiling" value="500" note="20 mailboxes, one ledger" />
       </div>
-      <p className="mt-5 text-xs font-semibold text-ink">Latest run</p>
+      <p className="mt-5 text-xs font-semibold text-ink">Draft pipeline</p>
       <ul className="mt-2 divide-y divide-line rounded-lg border border-line">
         {steps.map((s) => (
           <li key={s.name} className="flex items-center gap-3 px-3 py-2.5">
             {s.ok ? (
               <Check className="size-4 shrink-0 text-brand-dark" />
             ) : (
-              <CircleAlert className="size-4 shrink-0 text-amber-600" />
+              <Clock className="size-4 shrink-0 text-amber-600" />
             )}
             <span className="min-w-0 flex-1 truncate text-sm text-ink">{s.name}</span>
             <span className="hidden text-xs text-muted sm:inline">{s.tool}</span>
@@ -63,7 +63,7 @@ function OutreachMockup() {
                 s.ok ? "bg-brand-tint text-brand-ink" : "bg-amber-50 text-amber-700"
               }`}
             >
-              {s.ok ? "Done" : "Retry"}
+              {s.ok ? "Done" : "Waiting"}
             </span>
           </li>
         ))}

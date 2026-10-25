@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
     const dataValidation = "/projects/b2b-data-validation-deduplication";
     return [
       { source: "/about", destination: "/#overview", permanent: true },
+      // Earlier slug of the outreach case study, renamed on 2026-10-25.
+      {
+        source: "/projects/ai-outreach-drafting-system",
+        destination: "/projects/ai-outreach-automation-platform",
+        permanent: true,
+      },
       { source: "/work/data-quality-engine", destination: dataValidation, permanent: true },
       { source: "/writing/data-quality-playbook-78-to-94", destination: dataValidation, permanent: true },
       { source: "/work", destination: "/projects", permanent: true },

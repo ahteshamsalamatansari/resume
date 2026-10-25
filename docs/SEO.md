@@ -8,13 +8,14 @@ How search and social discovery work on this site, what is implemented, and what
 
 ## 1. Positioning and keywords
 
-The home page targets the person-name query and the main service queries, which match the Upwork profile positioning. Each case study page targets the longer, more specific queries for its own project (for example "n8n Airtable MCP outreach automation" or "SQL data validation deduplication").
+The home page targets the person-name query and the main service queries, which match the Upwork profile positioning. Each case study page targets the longer, more specific queries for its own project (for example "n8n Airtable OpenAI outreach automation" or "SQL data validation deduplication").
 
 | Page | URL | Purpose |
 | --- | --- | --- |
 | Home | `/` | Name, role, services, highlights |
 | Case studies index | `/projects` | Hub that links every case study |
 | Case study (×6) | `/projects/[slug]` | One project: problem, approach, outcome, tools, results |
+| Long-form case study | `/projects/ai-outreach-automation-platform` | Full engineering write-up with a table of contents, diagrams and tables (`src/components/case-studies/outreach-platform.tsx`) |
 
 | Intent | Primary terms | Where they appear |
 | --- | --- | --- |
@@ -112,6 +113,7 @@ The previous site at this domain had multiple pages that may be indexed. They no
 | `/resume` | `/` |
 | `/contact` | `/` |
 | `/Ahtesham-Ansari-AI-Engineer-Resume.pdf` | `/` |
+| `/projects/ai-outreach-drafting-system` | `/projects/ai-outreach-automation-platform` (slug renamed 2026-10-25) |
 
 The two old data-quality pages describe the same work as the new data validation case study, so they redirect straight to it. Other old project and case-study pages described work that is not on the current profile, so they go to the index rather than to an unrelated page. The remaining old blog posts (`/writing/*`) and the resume PDF have no equivalent on the new site. Google will likely treat those redirects as soft 404s and drop them from the index over the next few weeks. That is expected. Rankings those posts had will not transfer.
 
@@ -127,7 +129,7 @@ Both files were copied from the previous site so existing ownership stays valid.
 ## 5. After each production deploy
 
 1. **Google Search Console** (property `https://ahteshamsalamatansari.vercel.app`):
-   - Sitemaps: submit `sitemap.xml`. Remove the old sitemap if it is listed separately, since it pointed to the pages that now redirect.
+   - Sitemaps: submit `sitemap.xml` only. Remove the old sitemap if it is listed separately, since it pointed to the pages that now redirect. Never submit a page URL (such as `/projects`) as a sitemap; Search Console reports it as "Sitemap is HTML".
    - URL Inspection on `/`, `/projects` and each new or changed `/projects/<slug>`: *Request indexing*.
    - Watch *Pages → Not indexed → Page with redirect* over the next 2–4 weeks; the old URLs should move there.
 2. **Bing Webmaster Tools:** submit the sitemap and use *URL Submission* for `/`.

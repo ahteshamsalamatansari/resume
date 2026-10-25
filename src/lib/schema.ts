@@ -150,7 +150,7 @@ export function buildCaseStudyJsonLd(p: Project) {
         headline: p.title,
         description: p.summary,
         image: `${url}/opengraph-image`,
-        datePublished: LAST_UPDATED,
+        datePublished: p.published ?? LAST_UPDATED,
         dateModified: LAST_UPDATED,
         inLanguage: "en",
         author: { "@type": "Person", "@id": PERSON_ID, name: site.name, url: SITE_URL },

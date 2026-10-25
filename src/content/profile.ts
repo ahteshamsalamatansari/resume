@@ -2,8 +2,9 @@
  * Portfolio content.
  *
  * Every fact here comes from Ahtesham's Upwork profile (overview, employment
- * history, portfolio titles, certifications). Figures are only included where
- * the profile states them. Do not add numbers that are not in the source.
+ * history, portfolio titles, certifications) or, for the outreach platform,
+ * his own engineering case study. Figures are only included where a source
+ * states them. Do not add numbers that are not in the source.
  */
 
 export type Service = {
@@ -74,32 +75,40 @@ export type Project = {
   stack: string[];
   results: Metric[];
   mockup: "outreach" | "mcq" | "quality" | null;
+  /** Shown under the case study. Defaults to the BizProspex / Upwork-profile note. */
+  note?: string;
+  /** ISO date the full write-up was published, when it differs from the site update date. */
+  published?: string;
 };
 
 export const projects: Project[] = [
   {
     id: "outreach",
-    slug: "ai-outreach-drafting-system",
-    title: "AI Outreach Drafting System",
+    slug: "ai-outreach-automation-platform",
+    title: "AI Outreach Automation Platform",
     summary:
-      "An n8n and Airtable MCP workflow that drafts personalized emails for 7,000 prospects and cut daily time on generic replies from 4 hours to 35 minutes.",
+      "An n8n, Airtable and OpenAI outreach platform that researches each prospect's website, drafts grounded emails, holds them for human approval and sends across 20 mailboxes.",
     outcome:
-      "Generic replies that took about 4 hours a day now take 35 minutes, and every one of the 7,000 prospects gets a personalized draft. Runs are monitored from a custom control panel on a VPS, so failures are visible instead of silent.",
-    services: ["AI Agents, MCP & Workflow Automation","LLM Application Development"],
-    context: "BizProspex · AI Engineer",
+      "Delivered built, tested and verified: three campaign databases, about 60 workflows, an operator control panel and an operating manual. Sending capacity went from 100 to 500 emails a day after an audit, and every gate fails closed. Sending was left switched off for the client to launch, so no campaign performance figures are claimed.",
+    services: ["AI Agents, MCP & Workflow Automation", "LLM Application Development"],
+    context: "Client project · Sole engineer · ~3 months",
     problem:
-      "Replying to prospects with generic messages took hours every day, and every draft was written by hand.",
+      "A regional service company sold one service to three audiences with different buyers, objections and terms, and had no way to reach any of them at volume. The owner is non-technical, nothing may send without human sign-off, and the AI must never invent a price, claim or offer.",
     approach: [
-      "Built the workflow in n8n with Airtable connected through MCP as the prospect record.",
-      "The system drafts a personalized email for each prospect instead of a template reply.",
-      "Hosted on a VPS with a custom control panel to monitor each run and spot failures.",
+      "Researched 3,503 organisations from their own websites with a per-segment link-scoring crawler and structured extraction.",
+      "Drafted each email in three model calls, then checked every figure and offer in code against an approved knowledge base.",
+      "Enforced human approval in the database filter and again in code, and capped 20 mailboxes with one shared send ledger.",
+      "Routed replies, bounces and opt-outs from all mailboxes through one IMAP router, with bounce circuit breakers per campaign.",
     ],
-    stack: ["n8n", "Airtable", "MCP", "LLM drafting", "VPS"],
+    stack: ["n8n", "Airtable", "OpenAI", "Node.js", "Python", "Docker", "IMAP/SMTP"],
     results: [
-      { value: "7,000", label: "prospects with personalized drafts" },
-      { value: "4 h → 35 min", label: "daily time on generic replies" },
+      { value: "10,691", label: "contacts across 4,350 organisations" },
+      { value: "100 → 500", label: "daily send capacity after audit" },
+      { value: "500+", label: "test assertions on deployed code" },
     ],
     mockup: "outreach",
+    note: "Client project. The client's name, personal names, domains, infrastructure identifiers and commercial terms have been removed. Figures describe what was built and measured, not campaign performance.",
+    published: "2026-10-24",
   },
   {
     id: "mcq",

@@ -16,7 +16,7 @@ import { ProjectMockup } from "./project-mockups";
 import { Container, Eyebrow, SecondaryButton, SectionHeading, Signature, Tag, UpworkButton } from "./ui";
 
 const highlights = [
-  { value: "7,000", label: "prospects handled by an AI outreach drafting system" },
+  { value: "10,691", label: "contacts in an AI outreach platform with human approval" },
   { value: "1.5M", label: "questions and answers from a generative content pipeline" },
   { value: "78% → 94%", label: "dataset accuracy after validation and deduplication" },
   { value: "70%", label: "less manual processing time with automated ETL" },
@@ -52,7 +52,7 @@ export function Hero() {
         <aside aria-label="Selected results" className="self-end">
           <div className="rounded-2xl border border-line bg-white p-6 sm:p-7">
             <p className="text-sm font-semibold text-ink">Selected results</p>
-            <p className="mt-1 text-xs text-muted">From my work at BizProspex</p>
+            <p className="mt-1 text-xs text-muted">From client projects and my work at BizProspex</p>
             <dl className="mt-5 divide-y divide-line">
               {highlights.map((h) => (
                 <div key={h.value} className="grid grid-cols-[7.5rem_1fr] items-baseline gap-4 py-3.5">
@@ -309,7 +309,7 @@ export function Projects() {
           id="projects-title"
           eyebrow="Selected projects"
           title="Engineering work and outcomes"
-          intro="Work from my roles at BizProspex. Figures are the ones stated in my Upwork profile, and each project has a full case study."
+          intro="Client projects and work from my roles at BizProspex. Figures come from my Upwork profile and my own engineering write-ups, and each project has a full case study."
         />
 
         <div className="mt-14 rounded-3xl border border-line bg-white p-6 sm:p-10 lg:p-12">
