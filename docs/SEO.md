@@ -55,7 +55,7 @@ Rules: every keyword must map to content the page actually shows. Do not add ter
 | `/projects/[slug]/opengraph-image` | `src/app/projects/[slug]/opengraph-image.tsx` | One card per case study with its title, stack and results |
 
 All social cards share `src/lib/og.tsx` and are prerendered at build time. Font loading in that file is wrapped in `"use cache"`; without it the file read counts as uncached I/O and every image route becomes on-demand.
-| `/icon.svg`, `/apple-icon` | `src/app/icon.svg`, `src/app/apple-icon.tsx` | Favicon and 180×180 iOS icon |
+| `/favicon.ico`, `/icon.png`, `/apple-icon.png`, `/icon-512.png` | `src/app/favicon.ico`, `src/app/icon.png`, `src/app/apple-icon.png`, `public/icon-512.png` | Circular profile-photo favicon (16/32/48 ICO, 192 PNG), 180×180 iOS icon on white, 512 PNG for the web manifest |
 | `/llms.txt` | `src/app/llms.txt/route.ts` | Plain-text profile for AI assistants, built from the page content |
 
 ### Structured data (`src/lib/schema.ts`)
