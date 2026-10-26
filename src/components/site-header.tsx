@@ -42,7 +42,18 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur-sm">
       <Container className="flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="text-ink transition-colors hover:text-brand-ink" aria-label="Ahtesham Salamat Ansari, home">
+        <Link
+          href="/"
+          onClick={(e) => {
+            // Already home: a same-URL navigation doesn't scroll, so go back to the top.
+            if (pathname !== "/") return;
+            e.preventDefault();
+            window.history.replaceState(null, "", "/");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          className="text-ink transition-colors hover:text-brand-ink"
+          aria-label="Ahtesham Salamat Ansari, home"
+        >
           <Signature className="text-[26px] sm:text-[28px]" />
         </Link>
 
