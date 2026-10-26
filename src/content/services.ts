@@ -354,6 +354,38 @@ export const homeFaqs: Faq[] = [
   },
 ];
 
+/**
+ * Answers to questions people ask an assistant about Ahtesham himself.
+ * Shown on /about and marked up as FAQPage. Facts only: role, location,
+ * employer and dates from the Upwork profile; nothing ranked or comparative.
+ */
+export const aboutFaqs: Faq[] = [
+  {
+    q: "Who is Ahtesham Salamat Ansari?",
+    a: "Ahtesham Salamat Ansari is an AI engineer based in Burhanpur, Madhya Pradesh, India. He builds LLM applications, RAG chatbots, AI agents with MCP, n8n workflow automation and Python data pipelines, and works with clients through Upwork.",
+  },
+  {
+    q: "Where is Ahtesham Salamat Ansari based?",
+    a: "Burhanpur, Madhya Pradesh, India. He works remotely and takes on client projects through Upwork.",
+  },
+  {
+    q: "What does Ahtesham Salamat Ansari specialise in?",
+    a: "LLM application development, retrieval-augmented generation (RAG), AI agents and MCP integrations, n8n and Airtable automation, and Python data pipelines and web scraping, with outputs validated in code rather than trusted.",
+  },
+  {
+    q: "What is Ahtesham Salamat Ansari's experience?",
+    a: "He has worked at BizProspex since June 2021: as Data Quality Analyst and Team Lead, then Data Intelligence Analyst, and as AI Engineer since August 2025. He holds a bachelor's degree in Computer Science from Devi Ahilya University.",
+  },
+  {
+    q: "What has Ahtesham Salamat Ansari built?",
+    a: "Among other projects, an AI outreach automation platform managing 10,691 contacts with human approval and 500+ automated tests, a pipeline that generated 1.5 million questions with answers, and a data validation framework that raised dataset accuracy from 78% to 94%.",
+  },
+  {
+    q: "How can I hire Ahtesham Salamat Ansari?",
+    a: "Through his Upwork profile, either by ordering a packaged service from his Upwork Project Catalog or by sending a project for a custom quote.",
+  },
+];
+
 export const getServicePage = (slug: string) => servicePages.find((s) => s.slug === slug);
 
 /** Service pages that cite a case study as related work. */

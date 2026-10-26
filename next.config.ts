@@ -38,7 +38,6 @@ const nextConfig: NextConfig = {
   async redirects() {
     const dataValidation = "/projects/b2b-data-validation-deduplication";
     return [
-      { source: "/about", destination: "/#overview", permanent: true },
       // Earlier slug of the outreach case study, renamed on 2026-10-25.
       {
         source: "/projects/ai-outreach-drafting-system",

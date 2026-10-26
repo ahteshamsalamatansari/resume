@@ -35,6 +35,19 @@ export const VERIFICATION = {
   bing: process.env.NEXT_PUBLIC_BING_VERIFICATION ?? "DCCF0EFED55DD44D14F2C6FA741FBF1C",
 };
 
+/**
+ * Where Ahtesham is based. City-level only: no street address, phone or email
+ * (the site sends all hiring to Upwork). Used in visible copy and JSON-LD so
+ * search engines and AI assistants can answer location-based questions.
+ */
+export const LOCATION = {
+  city: "Burhanpur",
+  region: "Madhya Pradesh",
+  country: "India",
+  countryCode: "IN",
+  label: "Burhanpur, Madhya Pradesh, India",
+} as const;
+
 export const site = {
   name: "Ahtesham Salamat Ansari",
   shortName: "Ahtesham Ansari",
@@ -42,13 +55,15 @@ export const site = {
   positioning: "AI Engineer | LLM Applications, RAG, AI Agents & Python Automation",
   title: "Ahtesham Salamat Ansari | AI Engineer: LLM Apps, RAG, AI Agents & Python Automation",
   description:
-    "AI Engineer building LLM applications, RAG systems, AI agents, MCP integrations, and Python automation and data pipelines. Case studies with measured results from production work.",
+    "Ahtesham Salamat Ansari is an AI Engineer in Burhanpur, India, building LLM applications, RAG systems, AI agents, MCP integrations and Python automation. Case studies with measured results.",
+  /** One-sentence bio, repeated word for word on the site, in JSON-LD and in llms.txt. */
+  bio: "Ahtesham Salamat Ansari is an AI engineer based in Burhanpur, Madhya Pradesh, India, who builds LLM applications, RAG chatbots, AI agents with MCP, n8n workflow automation and Python data pipelines, and works with clients through Upwork.",
 } as const;
 
-// Services and Projects open their own pages. Overview and Skills are home-page
-// sections, root-relative so they also work from inner pages.
+// About, Services and Projects open their own pages. Skills is a home-page
+// section, root-relative so it also works from inner pages.
 export const navItems = [
-  { label: "Overview", href: "/#overview" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
   { label: "Skills", href: "/#skills" },

@@ -1,6 +1,6 @@
-import { SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
+import { LOCATION, SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
 import { career, certifications, projects, services, skillGroups } from "@/content/profile";
-import { homeFaqs, servicePages } from "@/content/services";
+import { aboutFaqs, homeFaqs, servicePages } from "@/content/services";
 
 /**
  * /llms.txt: a plain-text summary for AI assistants and answer engines,
@@ -10,9 +10,12 @@ export function GET() {
   const lines = [
     `# ${site.name}`,
     "",
-    `> ${site.positioning}. ${site.description}`,
+    `> ${site.bio}`,
     "",
+    `Role: ${site.positioning}`,
+    `Location: ${LOCATION.label}`,
     `Website: ${SITE_URL}`,
+    `About: ${SITE_URL}/about`,
     `Upwork profile: ${UPWORK_PROFILE_URL}`,
     "",
     "## Experience",
@@ -46,7 +49,7 @@ export function GET() {
     ...certifications.map((c) => `- ${c.name} (${c.issuer}, ${c.year})`),
     "",
     "## FAQ",
-    ...homeFaqs.flatMap((f) => [`Q: ${f.q}`, `A: ${f.a}`, ""]),
+    ...[...aboutFaqs, ...homeFaqs].flatMap((f) => [`Q: ${f.q}`, `A: ${f.a}`, ""]),
   ];
 
   return new Response(lines.join("\n"), {

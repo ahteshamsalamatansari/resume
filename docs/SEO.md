@@ -12,7 +12,8 @@ The home page targets the person-name query and the main service queries, which 
 
 | Page | URL | Purpose |
 | --- | --- | --- |
-| Home | `/` | Name, role, services, highlights |
+| Home | `/` | Name, role, location, services, highlights |
+| About | `/about` | Canonical profile of the person (entity home): bio, facts, experience, work, skills, quick answers. Targets name and "AI engineer in Burhanpur / Madhya Pradesh / India" queries |
 | Services index | `/services` | Hub that links every service, packaged first |
 | Service (×6) | `/services/[slug]` | One service: when it fits, deliverables, process, packages or pricing, related case studies, FAQ |
 | Case studies index | `/projects` | Hub that links every case study |
@@ -114,7 +115,6 @@ The previous site at this domain had multiple pages that may be indexed. They no
 
 | Old URL | New destination |
 | --- | --- |
-| `/about` | `/#overview` |
 | `/work/data-quality-engine` | `/projects/b2b-data-validation-deduplication` |
 | `/writing/data-quality-playbook-78-to-94` | `/projects/b2b-data-validation-deduplication` |
 | `/work`, `/work/*` | `/projects` |
@@ -152,7 +152,7 @@ Both files were copied from the previous site so existing ownership stays valid.
    ```bash
    curl -s https://ahteshamsalamatansari.vercel.app/robots.txt
    curl -s https://ahteshamsalamatansari.vercel.app/sitemap.xml
-   curl -sI https://ahteshamsalamatansari.vercel.app/about | grep -i location
+   curl -sI https://ahteshamsalamatansari.vercel.app/work | grep -i location
    curl -s -o /dev/null -w "%{http_code}\n" https://ahteshamsalamatansari.vercel.app/google57d36c46b130cd35.html
    ```
 
@@ -164,6 +164,17 @@ Both files were copied from the previous site so existing ownership stays valid.
 - **Never rename a slug** without adding a redirect from the old URL in `next.config.ts`.
 - **Custom domain:** add it in Vercel, then set `NEXT_PUBLIC_SITE_URL` for Production (or change the default in `src/config/site.ts`). Canonical, sitemap, robots, Open Graph and JSON-LD all follow. Add the new domain as a property in Search Console and Bing, and keep the `vercel.app` domain redirecting to it.
 - **Social image:** edit `src/app/opengraph-image.tsx`. The bundled fonts are a Latin subset with layout tables removed (the OG renderer cannot parse them). Characters outside basic Latin plus `→ · – ’` will not render; regenerate the subset if you need more.
+
+## 6a. Name and answer-engine optimisation (AEO)
+
+Goal: when someone asks a search engine or an AI assistant about Ahtesham Salamat Ansari, or for an AI engineer in Burhanpur or Madhya Pradesh, the answer is accurate and links here.
+
+- **One bio, everywhere.** `site.bio` in `src/config/site.ts` is used word for word on `/about`, in the `Person` description and at the top of `llms.txt`. Use the same text off-site (`docs/OFF-SITE-KIT.md`).
+- **Location.** `LOCATION` (city level only) feeds the hero eyebrow, overview, footer, `/about`, and the `Person` `address` and `homeLocation`.
+- **Entity home.** `/about` is the `AboutPage` whose `mainEntity` is the `Person`; the `Person` points back with `mainEntityOfPage`.
+- **Quick answers.** `aboutFaqs` in `src/content/services.ts` answer the questions people ask assistants about him, shown on `/about` and marked up as `FAQPage`. Facts only, no rankings or superlatives.
+- **IndexNow.** `public/<key>.txt` holds the key; `npm run indexnow` posts every sitemap URL to `api.indexnow.org` after a deploy. Bing feeds ChatGPT search and Copilot.
+- **Off-site.** Recommendations depend mostly on other sites describing him consistently. See `docs/OFF-SITE-KIT.md`.
 
 ## 7. Deliberate exclusions
 

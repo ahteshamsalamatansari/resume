@@ -1,6 +1,6 @@
-import { LAST_UPDATED, PHOTO, SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
+import { LAST_UPDATED, LOCATION, PHOTO, SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
 import { career, certifications, education, projects, services, skillGroups, type Project } from "@/content/profile";
-import { homeFaqs, servicePages, type Faq, type ServicePage } from "@/content/services";
+import { aboutFaqs, homeFaqs, servicePages, type Faq, type ServicePage } from "@/content/services";
 
 /**
  * JSON-LD graph for the home page: WebSite, ProfilePage and Person.
@@ -22,22 +22,44 @@ const faqPage = (faqs: Faq[], url: string) => ({
   })),
 });
 
-export function buildJsonLd() {
+function personNode() {
   const current = career[0];
 
   const person = {
     "@type": "Person",
     "@id": PERSON_ID,
     name: site.name,
-    alternateName: site.shortName,
+    alternateName: [site.shortName, "Ahtesham S. Ansari"],
+    givenName: "Ahtesham",
+    familyName: "Ansari",
     url: SITE_URL,
+    mainEntityOfPage: `${SITE_URL}/about`,
     image: { "@type": "ImageObject", url: `${SITE_URL}${PHOTO.src}`, width: PHOTO.width, height: PHOTO.height },
     jobTitle: site.role,
-    description: site.description,
+    description: site.bio,
+    disambiguatingDescription: `AI Engineer from ${LOCATION.label}, specialising in LLM applications, RAG, AI agents and Python automation`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: LOCATION.city,
+      addressRegion: LOCATION.region,
+      addressCountry: LOCATION.countryCode,
+    },
+    homeLocation: {
+      "@type": "Place",
+      name: LOCATION.label,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: LOCATION.city,
+        addressRegion: LOCATION.region,
+        addressCountry: LOCATION.countryCode,
+      },
+    },
+    nationality: { "@type": "Country", name: LOCATION.country },
     worksFor: { "@type": "Organization", name: current.org },
     hasOccupation: {
       "@type": "Occupation",
       name: site.role,
+      occupationLocation: { "@type": "Country", name: LOCATION.country },
       skills: skillGroups.flatMap((g) => g.skills).join(", "),
     },
     alumniOf: { "@type": "CollegeOrUniversity", name: education.school },
@@ -60,6 +82,11 @@ export function buildJsonLd() {
     // Upwork is the only public profile this site links to.
     sameAs: [UPWORK_PROFILE_URL],
   };
+  return person;
+}
+
+export function buildJsonLd() {
+  const person = personNode();
 
   const website = {
     "@type": "WebSite",
@@ -246,6 +273,35 @@ export function buildServiceJsonLd(s: ServicePage) {
         { name: "Home", url: `${SITE_URL}/` },
         { name: "Services", url: `${SITE_URL}/services` },
         { name: s.shortName, url },
+      ]),
+    ],
+  };
+}
+
+/** /about: the canonical profile of the person, with quick answers as FAQPage. */
+export function buildAboutJsonLd() {
+  const url = `${SITE_URL}/about`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "@id": `${url}#page`,
+        url,
+        name: `About ${site.name}, AI Engineer in ${LOCATION.city}, ${LOCATION.country}`,
+        description: site.bio,
+        isPartOf: { "@id": SITE_ID },
+        mainEntity: { "@id": PERSON_ID },
+        about: { "@id": PERSON_ID },
+        primaryImageOfPage: `${SITE_URL}${PHOTO.src}`,
+        dateModified: LAST_UPDATED,
+        inLanguage: "en",
+      },
+      personNode(),
+      faqPage(aboutFaqs, url),
+      breadcrumbs([
+        { name: "Home", url: `${SITE_URL}/` },
+        { name: "About", url },
       ]),
     ],
   };

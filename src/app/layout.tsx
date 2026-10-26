@@ -31,7 +31,11 @@ export const metadata: Metadata = {
   applicationName: site.name,
   keywords: [
     "Ahtesham Salamat Ansari",
+    "Ahtesham Ansari",
     "AI Engineer",
+    "AI engineer in Burhanpur",
+    "AI engineer in Madhya Pradesh",
+    "AI engineer in India",
     "LLM application development",
     "RAG developer",
     "Retrieval-Augmented Generation",

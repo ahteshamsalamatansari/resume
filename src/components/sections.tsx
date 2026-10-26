@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Award, Bot, Briefcase, FileSearch, GraduationCap, MessagesSquare, Workflow } from "lucide-react";
-import { PHOTO, UPWORK_PROFILE_URL } from "@/config/site";
+import { LOCATION, PHOTO, UPWORK_PROFILE_URL } from "@/config/site";
 import {
   agentBuilds,
   career,
@@ -31,7 +31,7 @@ export function Hero() {
     <section aria-labelledby="hero-title" className="relative overflow-hidden">
       <Container className="grid gap-14 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.35fr_1fr] lg:gap-16 lg:pb-28">
         <div>
-          <Eyebrow>AI Engineer · LLM Applications, RAG, AI Agents & Python Automation</Eyebrow>
+          <Eyebrow>AI Engineer in {LOCATION.city}, {LOCATION.country} · LLM Applications, RAG, AI Agents & Python Automation</Eyebrow>
           <h1
             id="hero-title"
             className="relative isolate mt-6 max-w-[16ch] text-[2.6rem] font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-[4.1rem]"
@@ -88,7 +88,7 @@ export function Overview() {
             />
             <figcaption>
               <p className="font-semibold text-ink">Ahtesham Salamat Ansari</p>
-              <p className="text-sm text-muted">AI Engineer · BizProspex</p>
+              <p className="text-sm text-muted">AI Engineer · {LOCATION.label}</p>
             </figcaption>
           </figure>
           <SectionHeading
@@ -98,8 +98,9 @@ export function Overview() {
           />
           <div className="mt-6 max-w-[60ch] space-y-4 text-[17px] leading-relaxed text-ink/85">
             <p>
-              I have worked at BizProspex since 2021: four years in data quality and data intelligence, including
-              leading the QA team, and AI engineering since August 2025.
+              I&rsquo;m Ahtesham Salamat Ansari, an AI engineer based in {LOCATION.label}, working remotely
+              with clients through Upwork. I have worked at BizProspex since 2021: four years in data quality and data
+              intelligence, including leading the QA team, and AI engineering since August 2025.
             </p>
             <p>
               Today I build AI automation, agents, and LLM data pipelines: outreach and research workflows, MCP
@@ -500,6 +501,10 @@ export function SiteFooter() {
           <div>
             <Signature className="text-2xl text-ink" />
             <p className="mt-1.5">AI Engineer · LLM Applications, RAG, AI Agents & Python Automation</p>
+            <p className="mt-1">Based in {LOCATION.label}</p>
+            <Link href="/about" className="mt-3 inline-block font-semibold text-brand-ink underline-offset-4 hover:underline">
+              About Ahtesham Salamat Ansari
+            </Link>
           </div>
           <nav aria-label="Services">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-ink/70">Services</h2>
