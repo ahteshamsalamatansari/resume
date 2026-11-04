@@ -150,7 +150,14 @@ export const servicePages: ServicePage[] = [
     metaTitle: "Python Web Scraping and Data Cleaning: Clean, Deduplicated Datasets",
     metaDescription:
       "A Python scraper built with Playwright or Selenium for the public sources you need, with the data cleaned, validated and deduplicated, delivered as CSV, Sheets or Airtable.",
-    keywords: ["Python web scraper", "web scraping service", "data cleaning and deduplication", "Playwright scraper", "Selenium scraping"],
+    keywords: [
+      "Python web scraper",
+      "web scraping service",
+      "data cleaning and deduplication",
+      "Playwright scraper",
+      "Selenium scraping",
+      "price monitoring scraper",
+    ],
     catalogTitle: "You will get a Python web scraper with a cleaned, deduplicated dataset",
     intro:
       "I build a Python scraper with Playwright or Selenium for the public sources you need, then clean, validate and deduplicate the data. You receive the dataset in CSV, Google Sheets or Airtable, plus the script so you can run it again.",
@@ -176,11 +183,21 @@ export const servicePages: ServicePage[] = [
       { name: "Advanced", delivery: "8 days", includes: "Up to 5 sources, scheduled runs, delivery to Sheets or Airtable" },
     ],
     stack: ["Python", "Playwright", "Selenium", "BeautifulSoup", "Pandas", "SQL"],
-    proof: ["b2b-data-validation-deduplication", "competitive-intelligence-research", "generative-mcq-pipeline", "automated-data-qa"],
+    proof: [
+      "airfare-price-monitoring-web-scraper",
+      "b2b-data-validation-deduplication",
+      "competitive-intelligence-research",
+      "generative-mcq-pipeline",
+      "automated-data-qa",
+    ],
     faqs: [
       {
         q: "Which websites can you scrape?",
         a: "Public sources only. Send the sites before ordering so I can check they are publicly accessible and can be collected reliably.",
+      },
+      {
+        q: "Can you scrape sites protected by Cloudflare or CAPTCHA?",
+        a: "Often, yes. In an airfare price monitoring project I collect public fares from five booking sites behind Cloudflare and CAPTCHA checks, using in-browser API calls, an unlocker service, a CAPTCHA-solving service, or a person in the loop. I check each site before quoting.",
       },
       {
         q: "What does cleaning and deduplication include?",

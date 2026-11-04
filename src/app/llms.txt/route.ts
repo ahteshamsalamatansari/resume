@@ -49,7 +49,11 @@ export function GET() {
     ...certifications.map((c) => `- ${c.name} (${c.issuer}, ${c.year})`),
     "",
     "## FAQ",
-    ...[...aboutFaqs, ...homeFaqs].flatMap((f) => [`Q: ${f.q}`, `A: ${f.a}`, ""]),
+    ...[...aboutFaqs, ...homeFaqs, ...projects.flatMap((p) => p.faqs ?? [])].flatMap((f) => [
+      `Q: ${f.q}`,
+      `A: ${f.a}`,
+      "",
+    ]),
   ];
 
   return new Response(lines.join("\n"), {

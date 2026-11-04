@@ -21,7 +21,7 @@ export const SITE_URL = (
 export const PHOTO = { src: "/ahtesham-salamat-ansari.jpg", width: 480, height: 480 } as const;
 
 /** Bump when page content changes; feeds sitemap lastmod. */
-export const LAST_UPDATED = "2026-10-25";
+export const LAST_UPDATED = "2026-11-04";
 
 /**
  * Search-engine ownership. Both are verified with files in /public

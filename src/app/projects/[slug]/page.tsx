@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import type { ComponentType } from "react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { FareMonitoringBody, fareMonitoringToc } from "@/components/case-studies/fare-monitoring";
 import { OutreachPlatformBody, outreachToc } from "@/components/case-studies/outreach-platform";
+import { FaqList } from "@/components/faq-list";
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { ProjectMockup } from "@/components/project-mockups";
@@ -19,6 +21,7 @@ type Props = { params: Promise<{ slug: string }> };
 /** Case studies with a full write-up instead of the problem / approach / outcome template. */
 const longform: Record<string, { Body: ComponentType; toc: { id: string; label: string }[] }> = {
   "ai-outreach-automation-platform": { Body: OutreachPlatformBody, toc: outreachToc },
+  "airfare-price-monitoring-web-scraper": { Body: FareMonitoringBody, toc: fareMonitoringToc },
 };
 
 const defaultNote =
@@ -97,6 +100,16 @@ export default async function CaseStudyPage({ params }: Props) {
             {full ? (
               <div className="min-w-0 max-w-[72ch]">
                 <full.Body />
+                {project.faqs && (
+                  <section id="faq" aria-labelledby="faq-title" className="mt-16">
+                    <h2 id="faq-title" className="text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem]">
+                      Quick answers
+                    </h2>
+                    <div className="mt-5">
+                      <FaqList faqs={project.faqs} />
+                    </div>
+                  </section>
+                )}
                 <p className="mt-16 border-t border-line pt-6 text-sm leading-relaxed text-muted">
                   {project.note ?? defaultNote}
                 </p>

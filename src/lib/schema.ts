@@ -209,6 +209,7 @@ export function buildCaseStudyJsonLd(p: Project) {
         keywords: p.stack.join(", "),
         about: p.services.map((name) => ({ "@type": "Thing", name })),
       },
+      ...(p.faqs ? [faqPage(p.faqs, url)] : []),
       breadcrumbs([
         { name: "Home", url: `${SITE_URL}/` },
         { name: "Case studies", url: `${SITE_URL}/projects` },

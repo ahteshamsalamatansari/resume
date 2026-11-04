@@ -151,7 +151,53 @@ function QualityMockup() {
   );
 }
 
-const mockups = { outreach: OutreachMockup, mcq: McqMockup, quality: QualityMockup };
+function FaresMockup() {
+  const feeds = [
+    { site: "Carrier site 1", method: "In-page API", status: "Done" },
+    { site: "Carrier site 2", method: "Unlocker API", status: "Done" },
+    { site: "Carrier site 3", method: "Booking flow", status: "Done" },
+    { site: "Carrier site 4", method: "Booking flow", status: "CAPTCHA" },
+    { site: "Travel agency", method: "Fare matrix", status: "Done" },
+  ];
+  return (
+    <Frame title="Fare monitor · run status">
+      <div className="grid grid-cols-2 gap-3">
+        <Stat label="Route feeds" value="34" note="5 booking sites" />
+        <Stat label="Forward window" value="84 days" note="per route, per run" />
+      </div>
+      <p className="mt-5 text-xs font-semibold text-ink">Collectors</p>
+      <ul className="mt-2 divide-y divide-line rounded-lg border border-line">
+        {feeds.map((f) => {
+          const ok = f.status === "Done";
+          return (
+            <li key={f.site} className="flex items-center gap-3 px-3 py-2.5">
+              {ok ? (
+                <Check className="size-4 shrink-0 text-brand-dark" />
+              ) : (
+                <ShieldCheck className="size-4 shrink-0 text-amber-600" />
+              )}
+              <span className="min-w-0 flex-1 truncate text-sm text-ink">{f.site}</span>
+              <span className="hidden text-xs text-muted sm:inline">{f.method}</span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                  ok ? "bg-brand-tint text-brand-ink" : "bg-amber-50 text-amber-700"
+                }`}
+              >
+                {ok ? "Done" : "Person solving"}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-3 flex items-center gap-2 text-xs text-muted">
+        <Clock className="size-3.5 shrink-0" />
+        Checkpoint saved after every row · resumes where it stopped
+      </p>
+    </Frame>
+  );
+}
+
+const mockups = { outreach: OutreachMockup, mcq: McqMockup, quality: QualityMockup, fares: FaresMockup };
 
 export function ProjectMockup({ kind, caption }: { kind: NonNullable<Project["mockup"]>; caption: string }) {
   const Mockup = mockups[kind];

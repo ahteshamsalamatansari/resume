@@ -25,7 +25,9 @@ export const outreachToc = [
   { id: "stack", label: "Stack and skills" },
 ];
 
-function Section({ id, title, lead, children }: { id: string; title: string; lead?: string; children: ReactNode }) {
+/* Layout helpers, shared with the other long-form case studies. */
+
+export function Section({ id, title, lead, children }: { id: string; title: string; lead?: string; children: ReactNode }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`}>
       <h2 id={`${id}-title`} className="text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem]">
@@ -37,19 +39,19 @@ function Section({ id, title, lead, children }: { id: string; title: string; lea
   );
 }
 
-function H3({ children }: { children: ReactNode }) {
+export function H3({ children }: { children: ReactNode }) {
   return <h3 className="pt-3 text-lg font-bold tracking-tight text-ink">{children}</h3>;
 }
 
-function P({ children }: { children: ReactNode }) {
+export function P({ children }: { children: ReactNode }) {
   return <p className="text-[17px] leading-relaxed text-ink/85">{children}</p>;
 }
 
-function Code({ children }: { children: ReactNode }) {
+export function Code({ children }: { children: ReactNode }) {
   return <code className="rounded bg-surface px-1.5 py-0.5 font-mono text-[0.88em] text-ink">{children}</code>;
 }
 
-function Bullets({ items, ordered = false }: { items: ReactNode[]; ordered?: boolean }) {
+export function Bullets({ items, ordered = false }: { items: ReactNode[]; ordered?: boolean }) {
   const List = ordered ? "ol" : "ul";
   return (
     <List className="space-y-3">
@@ -72,7 +74,7 @@ function Bullets({ items, ordered = false }: { items: ReactNode[]; ordered?: boo
   );
 }
 
-function Table({ caption, head, rows }: { caption: string; head: string[]; rows: ReactNode[][] }) {
+export function Table({ caption, head, rows }: { caption: string; head: string[]; rows: ReactNode[][] }) {
   return (
     <div className="overflow-x-auto rounded-xl border border-line bg-white">
       <table className="w-full border-collapse text-left text-[15px]">
@@ -108,7 +110,7 @@ function Table({ caption, head, rows }: { caption: string; head: string[]; rows:
   );
 }
 
-function Callout({ children }: { children: ReactNode }) {
+export function Callout({ children }: { children: ReactNode }) {
   return (
     <div className="rounded-xl border-l-4 border-brand bg-brand-tint px-5 py-4 text-[17px] leading-relaxed text-ink">
       {children}
@@ -116,7 +118,7 @@ function Callout({ children }: { children: ReactNode }) {
   );
 }
 
-function Problem({ n, title, rows }: { n: number; title: string; rows: { label: string; body: ReactNode }[] }) {
+export function Problem({ n, title, rows }: { n: number; title: string; rows: { label: string; body: ReactNode }[] }) {
   return (
     <article className="rounded-2xl border border-line bg-white p-5 sm:p-6">
       <h3 className="flex gap-3 text-lg font-bold tracking-tight text-ink">

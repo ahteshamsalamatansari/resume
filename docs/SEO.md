@@ -17,8 +17,9 @@ The home page targets the person-name query and the main service queries, which 
 | Services index | `/services` | Hub that links every service, packaged first |
 | Service (×6) | `/services/[slug]` | One service: when it fits, deliverables, process, packages or pricing, related case studies, FAQ |
 | Case studies index | `/projects` | Hub that links every case study |
-| Case study (×6) | `/projects/[slug]` | One project: problem, approach, outcome, tools, results |
+| Case study (×7) | `/projects/[slug]` | One project: problem, approach, outcome, tools, results |
 | Long-form case study | `/projects/ai-outreach-automation-platform` | Full engineering write-up with a table of contents, diagrams and tables (`src/components/case-studies/outreach-platform.tsx`) |
+| Long-form case study | `/projects/airfare-price-monitoring-web-scraper` | Web scraping write-up (`src/components/case-studies/fare-monitoring.tsx`) with a "Quick answers" section emitted as `FAQPage` JSON-LD. Targets "airfare / flight price monitoring scraper", "competitor price monitoring", "scraping Cloudflare / CAPTCHA protected sites", "Playwright web scraping". No carrier, booking-site or route names, by client request |
 
 | Intent | Primary terms | Where they appear |
 | --- | --- | --- |

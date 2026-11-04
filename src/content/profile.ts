@@ -3,9 +3,13 @@
  *
  * Every fact here comes from Ahtesham's Upwork profile (overview, employment
  * history, portfolio titles, certifications) or, for the outreach platform,
- * his own engineering case study. Figures are only included where a source
- * states them. Do not add numbers that are not in the source.
+ * his own engineering case study. The airfare monitoring figures come from
+ * the project's own code and delivered output files. Figures are only
+ * included where a source states them. Do not add numbers that are not in
+ * the source.
  */
+
+import type { Faq } from "./services";
 
 export type Service = {
   title: string;
@@ -74,11 +78,13 @@ export type Project = {
   approach: string[];
   stack: string[];
   results: Metric[];
-  mockup: "outreach" | "mcq" | "quality" | null;
+  mockup: "outreach" | "mcq" | "quality" | "fares" | null;
   /** Shown under the case study. Defaults to the BizProspex / Upwork-profile note. */
   note?: string;
   /** ISO date the full write-up was published, when it differs from the site update date. */
   published?: string;
+  /** Quick answers shown at the end of a long-form case study and emitted as FAQPage JSON-LD. */
+  faqs?: Faq[];
 };
 
 export const projects: Project[] = [
@@ -109,6 +115,56 @@ export const projects: Project[] = [
     mockup: "outreach",
     note: "Client project. The client's name, personal names, domains, infrastructure identifiers and commercial terms have been removed. Figures describe what was built and measured, not campaign performance.",
     published: "2026-10-24",
+  },
+  {
+    id: "fares",
+    slug: "airfare-price-monitoring-web-scraper",
+    title: "Airfare Price Monitoring Web Scraper",
+    summary:
+      "A Python and Playwright web scraping system that tracks published airfares on 34 regional routes across 5 booking sites, 84 days ahead, with Cloudflare and CAPTCHA handling.",
+    outcome:
+      "Recurring fare collection since June 2026: 144,426 unique fare records across 88 collection dates, delivered as CSV and Excel in one 10-column format, whichever site or collector produced them.",
+    services: ["Python Automation & Data Pipelines"],
+    context: "Client project · Recurring engagement since June 2026",
+    problem:
+      "A client needed one comparable view of published fares from every carrier and a travel agency serving the same regional routes. The five sites use different booking engines, sit behind Cloudflare or CAPTCHA checks, and a missed day of fares cannot be collected later.",
+    approach: [
+      "Built one collector per site, choosing the lightest method each allowed: internal JSON endpoints, a web-unlocker API, or full Playwright booking-flow automation.",
+      "Where a site allowed it, replaced a full page load per date with one warm-up per route and sub-second fetch() calls run inside that browser session.",
+      "Detected each challenge type and routed it to an unlocker service, a CAPTCHA-solving service or a person, and stopped loudly when the provider failed.",
+      "Added row-level checkpoints, resume, retries and local recovery runners that write the same output as the scheduled runs.",
+    ],
+    stack: ["Python", "Playwright", "asyncio", "Bright Data", "CapSolver", "Pandas", "BeautifulSoup"],
+    results: [
+      { value: "144,426", label: "unique fare records collected" },
+      { value: "34", label: "route feeds across 5 booking sites" },
+      { value: "84 days", label: "of forward fares per route, per run" },
+    ],
+    mockup: "fares",
+    note: "Client project. Carrier names, booking-site names, routes, endpoints, credentials and the client's identity have been removed. Figures come from the delivered output files and the project code.",
+    published: "2026-11-04",
+    faqs: [
+      {
+        q: "How do you scrape flight prices from airline websites?",
+        a: "Start with the lightest method the site allows. Where the booking page calls an internal JSON endpoint, I call it from inside a real browser session. Where it does not, Playwright drives the full search flow: route, one-way, date, results. Every site's output is normalised into the same columns.",
+      },
+      {
+        q: "How do you handle Cloudflare and CAPTCHA when scraping?",
+        a: "The scraper first detects which challenge it faces: Cloudflare Turnstile, a JavaScript challenge, reCAPTCHA v2 or v3, or hCaptcha. It then routes it to a web-unlocker service, a CAPTCHA-solving service, or a visible browser where a person solves it, and continues automatically once the page clears.",
+      },
+      {
+        q: "What happens when a scraping run fails halfway?",
+        a: "Nothing collected is lost. Each route saves a checkpoint after every row, so a rerun with resume skips completed dates. Failed routes retry after a cooldown, and if the proxy provider is down the run stops with a clear warning instead of delivering empty files.",
+      },
+      {
+        q: "How much data does the fare monitoring system collect?",
+        a: "Each run covers 34 route feeds, 84 days ahead, which is 2,856 route-date searches. Between June and November 2026 it produced 144,426 unique fare records across 88 collection dates, delivered as CSV and Excel files.",
+      },
+      {
+        q: "Does this approach work for other price monitoring, such as e-commerce or hotels?",
+        a: "Yes. The pattern is not specific to airfares: one collector per site, the lightest method each site allows, challenge handling, checkpoints, and one shared output schema. It applies to competitor price tracking for products, hotel rates, rental listings and other public pricing data.",
+      },
+    ],
   },
   {
     id: "mcq",
