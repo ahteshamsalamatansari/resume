@@ -20,8 +20,22 @@ export const SITE_URL = (
 /** Profile photo: shown in the overview and used as the Person image in JSON-LD. */
 export const PHOTO = { src: "/ahtesham-salamat-ansari.jpg", width: 480, height: 480 } as const;
 
+/**
+ * Intro video in the hero, encoded from Ahtesham-Upwork-Intro-1080p-final.mp4.
+ * The folder is versioned because /video is cached as immutable: re-encode into a new folder.
+ */
+export const INTRO_VIDEO = {
+  title: "Ahtesham Salamat Ansari: AI automation engineer introduction",
+  hls: "/video/intro-v1/master.m3u8",
+  mp4: "/video/intro-v1/intro-720p.mp4",
+  poster: "/video/intro-v1/poster.jpg",
+  duration: "PT1M37S",
+  durationLabel: "1:37",
+  uploadDate: "2026-11-07",
+} as const;
+
 /** Bump when page content changes; feeds sitemap lastmod. */
-export const LAST_UPDATED = "2026-11-04";
+export const LAST_UPDATED = "2026-11-07";
 
 /**
  * Search-engine ownership. Both are verified with files in /public

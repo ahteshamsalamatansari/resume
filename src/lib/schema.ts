@@ -1,4 +1,4 @@
-import { LAST_UPDATED, LOCATION, PHOTO, SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
+import { INTRO_VIDEO, LAST_UPDATED, LOCATION, PHOTO, SITE_URL, UPWORK_PROFILE_URL, site } from "@/config/site";
 import { career, certifications, education, projects, services, skillGroups, type Project } from "@/content/profile";
 import { aboutFaqs, homeFaqs, servicePages, type Faq, type ServicePage } from "@/content/services";
 
@@ -146,7 +146,26 @@ export function buildJsonLd() {
     ],
   };
 
-  return { "@context": "https://schema.org", "@graph": [website, profilePage, person, faqPage(homeFaqs, SITE_URL)] };
+  // The hero intro video, so search engines can list it for name searches.
+  const video = {
+    "@type": "VideoObject",
+    "@id": `${SITE_URL}/#intro-video`,
+    name: INTRO_VIDEO.title,
+    description:
+      "Ahtesham Salamat Ansari, an AI engineer in Burhanpur, India, introduces the automation systems he builds with Python, n8n, REST APIs, webhooks, databases and LLMs, and how he works.",
+    thumbnailUrl: `${SITE_URL}${INTRO_VIDEO.poster}`,
+    contentUrl: `${SITE_URL}${INTRO_VIDEO.mp4}`,
+    uploadDate: INTRO_VIDEO.uploadDate,
+    duration: INTRO_VIDEO.duration,
+    inLanguage: "en",
+    creator: { "@id": PERSON_ID },
+    about: { "@id": PERSON_ID },
+  };
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [website, { ...profilePage, video: { "@id": video["@id"] } }, person, video, faqPage(homeFaqs, SITE_URL)],
+  };
 }
 
 const breadcrumbs = (items: { name: string; url: string }[]) => ({

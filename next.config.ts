@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
+      // Hero video files live in a versioned folder, so they never change in place.
+      {
+        source: "/video/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
       {
         source: "/llms.txt",
         headers: [{ key: "Cache-Control", value: "public, max-age=3600, s-maxage=86400" }],

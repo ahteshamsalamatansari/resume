@@ -15,6 +15,7 @@ import {
 } from "@/content/profile";
 import { homeFaqs, servicePages } from "@/content/services";
 import { FaqList } from "./faq-list";
+import { HeroVideo } from "./hero-video";
 import { ProjectMockup } from "./project-mockups";
 import { ServiceGrid } from "./service-grid";
 import { Container, Eyebrow, SecondaryButton, SectionHeading, Signature, Tag, UpworkButton } from "./ui";
@@ -29,7 +30,7 @@ const highlights = [
 export function Hero() {
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden">
-      <Container className="grid gap-14 pb-20 pt-16 sm:pt-24 lg:grid-cols-[1.35fr_1fr] lg:gap-16 lg:pb-28">
+      <Container className="grid gap-12 pt-16 sm:pt-24 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-14">
         <div>
           <Eyebrow>AI Engineer in {LOCATION.city}, {LOCATION.country} · LLM Applications, RAG, AI Agents & Python Automation</Eyebrow>
           <h1
@@ -53,19 +54,22 @@ export function Hero() {
           </div>
         </div>
 
-        <aside aria-label="Selected results" className="self-end">
-          <div className="rounded-2xl border border-line bg-white p-6 sm:p-7">
-            <p className="text-sm font-semibold text-ink">Selected results</p>
-            <p className="mt-1 text-xs text-muted">From client projects and my work at BizProspex</p>
-            <dl className="mt-5 divide-y divide-line">
-              {highlights.map((h) => (
-                <div key={h.value} className="grid grid-cols-[7.5rem_1fr] items-baseline gap-4 py-3.5">
-                  <dt className="text-xl font-bold tracking-tight text-brand-ink">{h.value}</dt>
-                  <dd className="text-sm leading-snug text-muted">{h.label}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+        <HeroVideo />
+      </Container>
+
+      <Container className="pb-20 pt-14 lg:pb-28">
+        <aside aria-label="Selected results" className="rounded-2xl border border-line bg-white p-6 sm:p-7">
+          <p className="text-sm font-semibold text-ink">
+            Selected results <span className="font-normal text-muted">· from client projects and my work at BizProspex</span>
+          </p>
+          <dl className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-4">
+            {highlights.map((h) => (
+              <div key={h.value} className="border-l-2 border-brand pl-4">
+                <dt className="text-2xl font-bold tracking-tight text-brand-ink">{h.value}</dt>
+                <dd className="mt-1 text-sm leading-snug text-muted">{h.label}</dd>
+              </div>
+            ))}
+          </dl>
         </aside>
       </Container>
     </section>
