@@ -33,14 +33,17 @@ export function HeroVideo() {
       }
       // Before play, buffer only the opening seconds (maxMaxBufferLength is the hard
       // ceiling; hls.js stretches maxBufferLength on low bitrates). play() lifts both.
-      const hls = new HlsJs({ maxBufferLength: 4, maxMaxBufferLength: 4 });
+      // Start from a 1.2 Mbps guess, which opens at 480p; ABR then adjusts.
+      const hls = new HlsJs({ maxBufferLength: 4, maxMaxBufferLength: 4, abrEwmaDefaultEstimate: 1_200_000 });
       // Cap quality to the player's pixel width (hls.js's own capping only runs while
-      // the player is on screen), and lift the cap in fullscreen.
+      // the player is on screen), and lift the cap in fullscreen. The cap never goes
+      // below 480p; 360p is only for connections too slow for it.
       const cap = () => {
         if (document.fullscreenElement) return void (hls.autoLevelCapping = -1);
         const px = video.clientWidth * window.devicePixelRatio;
-        const i = hls.levels.findIndex((l) => l.width >= px);
-        hls.autoLevelCapping = i === -1 ? hls.levels.length - 1 : i;
+        const fit = hls.levels.findIndex((l) => l.width >= px);
+        const floor = Math.max(0, hls.levels.findIndex((l) => l.height >= 480));
+        hls.autoLevelCapping = Math.max(floor, fit === -1 ? hls.levels.length - 1 : fit);
       };
       hls.on(HlsJs.Events.MANIFEST_PARSED, cap);
       document.addEventListener("fullscreenchange", cap);

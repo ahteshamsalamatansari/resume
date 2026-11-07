@@ -26,9 +26,9 @@ export const PHOTO = { src: "/ahtesham-salamat-ansari.jpg", width: 480, height: 
  */
 export const INTRO_VIDEO = {
   title: "Ahtesham Salamat Ansari: AI automation engineer introduction",
-  hls: "/video/intro-v1/master.m3u8",
-  mp4: "/video/intro-v1/intro-720p.mp4",
-  poster: "/video/intro-v1/poster.jpg",
+  hls: "/video/intro-v2/master.m3u8",
+  mp4: "/video/intro-v2/intro-720p.mp4",
+  poster: "/video/intro-v2/poster.jpg",
   duration: "PT1M37S",
   durationLabel: "1:37",
   uploadDate: "2026-11-07",
